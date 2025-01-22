@@ -1,0 +1,210 @@
+<!Doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/res_kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/fontello-51cfb816/fontello-51cfb816/css/fontello.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>Bull - Cytrulina</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../../js/sticki.js"></script>
+    <script src="../../js/jquery.scrollTo.min.js"></script>
+    <script src="../../js/scroll.js"></script>
+    <script src="../../js/hamburger.js"></script>
+    <script src="../../js/animacja.js"></script>
+    <script src="przycisk.js"></script>
+</head>
+<body>
+    <div class="contener" >
+        <section class="logo" id="dom">
+            <div class="logo_tlo">
+                <h1>BULL</h1>
+            </div>
+        </section>
+        <div class="nav">
+            <div class="nav_tlo">
+                <div class="hamburger" id="hamburger">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <ul class="menu" id="nav-links">
+                    <li><a href="../../index.html"><i class="icon-home" style="font-size: 18px;"></i></a></li>
+                    <li><a href="../bialko.html">Białko</a></li>
+                    <li><a href="../kreatyna.html">Kreatyna</a></li>
+                    <li><a href="../boost.html">Boostery Przedtreningowe</a></li>
+                    <li><a href="../witaminy.html">Witaminy</a></li>
+                    <li><a id="link7" href="#kont">Kontakt</a></li>
+                </ul>
+                <div class="logo_mini">
+                    <div class="logo_tlo">
+                        <h1>BULL</h1>
+                    </div>
+                </div>
+                <div class="konto">
+                    <a href="../sklep.html"><i class="icon-basket"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="prod_main">
+            <div class="prod_main_tlo">
+                <div class="prod_main_lew">
+                    <img alt="testo" src="../../img/produkty/wit/cyrt.jpg">
+                    <div class="info_txt szczegol">
+                        <div class="info_txt_tlo fot">
+                            <h4>Połączenie dwóch form cytruliny.</h4>
+                            <h4>Zawiera jabłczan cytruliny i L-cytrulinę.</h4>
+                            <h4>Zawarty magnez przyczynia się do prawidłowego funkcjonowania układu nerwowego, a także pomaga w procesach produkcji energii i funkcjonowaniu mięśni.</h4>
+                            <h4>Witamina B6 przyczynia się zmniejszenia uczucia zmęczenia i znużenia.</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="prod_main_pra" data-id="12">
+                    <p class="nazwa_produktu">Cytrulina Cola</p>
+                    <p class="smak_prd"> Cola - 240g </p>
+                    <p class="cena_produktu">Cena: 70zł</p>
+                    <p class="cena_produktu_jedno">Cena jednostkowa:  240g (29,16 zł / 100g)</p>
+                    <div class="number-input">
+                        <button class="minus">-</button>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="20">
+                        <button class="plus">+</button>
+                        <a class="przycisk_produkt">Dodaj do koszyka</a>
+                    </div>
+                </div>
+                <script>
+                    // Funkcja dodająca produkt do koszyka
+                    function addToCart(id, nazwa, cena, ilosc) {
+                        // Usuń "zł" z ceny i skonwertuj ją na liczbę
+                        cena = parseFloat(cena.replace('zł', '').trim());
+                        ilosc = parseInt(ilosc);
+
+                        // Pobierz aktualny koszyk z localStorage
+                        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+                        // Sprawdź, czy produkt już jest w koszyku
+                        const existingProduct = cart.find(product => product.id === id);
+
+                        if (existingProduct) {
+                            // Jeśli produkt istnieje, zwiększ ilość
+                            existingProduct.quantity += ilosc;
+                        } else {
+                            // Jeśli produkt nie istnieje, dodaj go do koszyka
+                            cart.push({ id, nazwa, cena, quantity: ilosc });
+                        }
+
+                        // Zapisz koszyk w localStorage
+                        localStorage.setItem("cart", JSON.stringify(cart));
+
+                        console.log(`${nazwa} dodano do koszyka!`);
+                    }
+
+                    // Dodaj event listener do przycisku "+"
+                    document.querySelector('.plus').addEventListener('click', function() {
+                        var quantity = document.querySelector('#quantity');
+                        var currentValue = parseInt(quantity.value);
+                        quantity.value = currentValue + 1;
+                    });
+
+                    // Dodaj event listener do przycisku "-"
+                    document.querySelector('.minus').addEventListener('click', function() {
+                        var quantity = document.querySelector('#quantity');
+                        var currentValue = parseInt(quantity.value);
+                        if (currentValue > 1) {
+                            quantity.value = currentValue - 1;
+                        }
+                    });
+
+                    // Dodaj event listener do przycisku "Dodaj do koszyka"
+                    document.querySelector('#add-to-cart').addEventListener('click', function() {
+                        var id = document.querySelector('.prod_main_pra').getAttribute('data-id');
+                        var nazwa = document.querySelector('.nazwa_produktu').textContent;
+                        var cena = document.querySelector('.cena_produktu').textContent.replace('Cena: ', '');
+                        var ilosc = document.querySelector('#quantity').value;
+
+                        // Wywołaj funkcję addToCart z parametrami
+                        addToCart(id, nazwa, cena, ilosc);
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="info_txt">
+            <div class="info_txt_tlo fot">
+                <h2>OPIS </h2>
+                <p>Suplement diety zawierający kompleks cytruliny oraz jabłczanu cytruliny. Suplement polecany jest szczególnie przed treningiem.</p>
+                <p>Cytrulina to aminokwas nieproteogenny, który bierze udział w wielu ważnych procesach metabolicznych, w tym w cyklu mocznikowym. Naturalnymi źródłami cytruliny są m.in. arbuz i melon. Cytrulina uczestniczy także w syntezie tlenku azotu (NO), który wpływa na rozluźnienie mięśniówki naczyń krwionośnych, poprawiając ich średnicę.</p>
+                <p>Połączenie dwóch form cytruliny w tym produkcie umożliwia efektywniejsze wykorzystanie cytruliny w organizmie, poprawiając funkcjonowanie układu krwionośnego oraz wspomagając wydolność organizmu.</p>
+
+                <h2>DAWKOWANIE</h2>
+                <p>Jednorazową porcję – 3 g (0,5 miarki) – rozpuścić w 300 ml wody.</p>
+                <p>W dni treningowe: I porcja: 30 min. przed treningiem, II porcja: bezpośrednio po treningu.</p>
+                <p>W dni nietreningowe: I porcja: rano po przebudzeniu, II porcja: przed snem.</p>
+                <p>Zalecana dzienna porcja: 2 porcje.</p>
+
+                <h2>OSTRZEŻENIA</h2>
+                <p>Produkt nie może być stosowany jako substytut zróżnicowanej diety.</p>
+                <p>Preparat nie jest przeznaczony dla dzieci, kobiet w ciąży oraz karmiących.</p>
+                <p>Zrównoważona dieta i zdrowy tryb życia są ważne.</p>
+                <p>Przechowywać w suchym pomieszczeniu, w zamkniętym opakowaniu, w temperaturze 15–25°C.</p>
+                <p>Chronić przed światłem i wilgocią.</p>
+                <p>Po otwarciu spożyć w ciągu 3 miesięcy.</p>
+                <p>Najlepiej spożyć przed końcem: Data i numer partii znajdują się na spodzie opakowania.</p>
+
+                <h2>Składniki odżywki</h2>
+                <table class="tabelka">
+                    <thead>
+                        <tr>
+                            <th>Składniki aktywne</th>
+                            <th>w 6 g</th>
+                            <th>w 3 g</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CITRULLINE COMPLEX [Jabłczan Cytruliny; L-Cytrulina]</td>
+                            <td>4800 mg</td>
+                            <td>2400 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym L-Cytrulina</td>
+                            <td>3708 mg</td>
+                            <td>1854 mg</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer" id="kontakt">
+            <div class="footer_tlo">
+                <section class="kontakt">
+                    <h3>Kontakt</h3>
+                    <a href=""><p>+48 777 888 999</p></a>
+                    <a href=""><p>kontak@bull.com</p></a>
+                    <a href=""><p>Pn.-Pt. 9:00-16:00</p></a>
+                </section>
+                <section class="produkty_kontakt">
+                    <h3>Produkty</h3>
+                    <a href="bialko/bialko.html"><p>Białko</p></a>
+                    <a href=""><p>Kreatyna</p></a>
+                    <a href=""><p>Boostery Przedtreningowe</p></a>
+                    <a href=""><p>Witaminy</p></a>
+                    <a href=""><p>Aminokwasy</p></a>
+                </section>
+                <section class="social">
+                    <h3>Odwiedź nas na socialach</h3>
+                    <a href=""><p><i class="icon-facebook-circled"></i>Facebook</p></a>
+                    <a href=""><p><i class="icon-instagram"></i>Instagram</p></a>
+                </section>
+            </div>
+            <div class="copy">
+                <p id="kont">&copy Bull 2024</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!Doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/res_kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/fontello-51cfb816/fontello-51cfb816/css/fontello.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>BULL - Przedtreningówka</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../../js/sticki.js"></script>
+    <script src="../../js/jquery.scrollTo.min.js"></script>
+    <script src="../../js/scroll.js"></script>
+    <script src="../../js/hamburger.js"></script>
+    <script src="../../js/animacja.js"></script>
+    <script src="przycisk.js"></script>
+</head>
+<body>
+    <div class="contener" >
+        <section class="logo" id="dom">
+            <div class="logo_tlo">
+                <h1>BULL</h1>
+            </div>
+        </section>
+        <div class="nav">
+            <div class="nav_tlo">
+                <div class="hamburger" id="hamburger">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <ul class="menu" id="nav-links">
+                    <li><a href="../../index.html"><i class="icon-home" style="font-size: 18px;"></i></a></li>
+                    <li><a href="../bialko.html">Białko</a></li>
+                    <li><a href="../kreatyna.html">Kreatyna</a></li>
+                    <li><a href="../boost.html">Boostery Przedtreningowe</a></li>
+                    <li><a href="../witaminy.html">Witaminy</a></li>
+                    <li><a id="link7" href="#kont">Kontakt</a></li>
+                </ul>
+                <div class="logo_mini">
+                    <div class="logo_tlo">
+                        <h1>BULL</h1>
+                    </div>
+                </div>
+                <div class="konto">
+                    <a href="../sklep.html"><i class="icon-basket"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="prod_main">
+            <div class="prod_main_tlo">
+                <div class="prod_main_lew">
+                    <img alt="boos3" src="../../img/produkty/boost/b3.jpg">
+                    <div class="info_txt szczegol">
+                        <div class="info_txt_tlo fot">
+                            <h4>Kultowa przedtreningówka.</h4>
+                            <h4>Skuteczna formuła przedtreningowa.</h4>
+                            <h4>Witaminy z grupy B zmniejszają uczucie zmęczenia i znużenia.</h4>
+                            <h4>Magnez pomaga w prawidłowym funkcjonowaniu mięśni.</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="prod_main_pra" data-id="11">
+                    <p class="nazwa_produktu">Przedtreningówka - Boost Cola</p>
+                    <p class="smak_prd">  Cola - 300g </p>
+                    <p class="cena_produktu">Cena: 100zł</p>
+                    <p class="cena_produktu_jedno">Cena jednostkowa:  300g (33,33 zł / 100g)</p>
+                    <div class="number-input">
+                        <button class="minus">-</button>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="20">
+                        <button class="plus">+</button>
+                        <a class="przycisk_produkt">Dodaj do koszyka</a>
+                    </div>
+                </div>
+
+                <!--                script-->
+                <script>
+                    // Funkcja dodająca produkt do koszyka
+                    function addToCart(id, nazwa, cena, ilosc) {
+                        // Usuń "zł" z ceny i skonwertuj ją na liczbę
+                        cena = parseFloat(cena.replace('zł', '').trim());
+                        ilosc = parseInt(ilosc);
+
+                        // Pobierz aktualny koszyk z localStorage
+                        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+                        // Sprawdź, czy produkt już jest w koszyku
+                        const existingProduct = cart.find(product => product.id === id);
+
+                        if (existingProduct) {
+                            // Jeśli produkt istnieje, zwiększ ilość
+                            existingProduct.quantity += ilosc;
+                        } else {
+                            // Jeśli produkt nie istnieje, dodaj go do koszyka
+                            cart.push({ id, nazwa, cena, quantity: ilosc });
+                        }
+
+                        // Zapisz koszyk w localStorage
+                        localStorage.setItem("cart", JSON.stringify(cart));
+
+                        console.log(`${nazwa} dodano do koszyka!`);
+                    }
+
+                    // Dodaj event listener do przycisków z klasą "przycisk_produkt"
+                    document.querySelectorAll('.przycisk_produkt').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            // Pobierz element rodzica produktu
+                            const productElement = event.target.closest('.prod_main_pra');
+
+                            // Pobierz dane produktu z elementów HTML
+                            const id = productElement.getAttribute('data-id');
+                            const nazwa = productElement.querySelector('.nazwa_produktu').textContent;
+                            const cena = productElement.querySelector('.cena_produktu').textContent.replace('Cena: ', '');
+                            const ilosc = productElement.querySelector('#quantity').value;
+
+                            // Wywołaj funkcję addToCart
+                            addToCart(id, nazwa, cena, ilosc);
+                        });
+                    });
+
+                    // Dodaj event listener do przycisków "+" i "-"
+                    document.querySelectorAll('.plus').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
+                            const currentValue = parseInt(quantityInput.value);
+                            quantityInput.value = currentValue + 1;
+                        });
+                    });
+
+                    document.querySelectorAll('.minus').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
+                            const currentValue = parseInt(quantityInput.value);
+                            if (currentValue > 1) {
+                                quantityInput.value = currentValue - 1;
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="info_txt">
+            <div class="info_txt_tlo fot">
+                <h2>OPIS PRZEDTRENINGÓWKI</h2>
+                <p>Suplement diety przeznaczony dla sportowców do stosowania przed najbardziej wymagającymi treningami i zawodami. Zawiera witaminy z grupy B, takie jak niacyna i witamina B6, które pomagają zmniejszyć uczucie zmęczenia i znużenia.</p>
+
+                <p>Produkt zawiera substancje słodzące.</p>
+
+                <p>Zalecana dzienna porcja do spożycia to 3,3 g (0,5 miarki).</p>
+                <h2>DAWKOWANIE</h2>
+                <p>Jednorazową porcję produktu ‒ 3,3 g (0,5 miarki) ‒ należy rozpuścić w 100 ml wody, najlepiej przy użyciu szejkera. Preparat stosować na 30 minut przed planowanym treningiem.</p>
+
+                <p>Nie stosować przed snem.</p>
+
+                <p>Nie spożywać z innymi produktami będącymi źródłem kofeiny lub innych składników o podobnym działaniu.</p>
+
+                <p>Nie należy przekraczać zalecanej porcji do spożycia w ciągu dnia.</p>
+                <h2>OSTRZEŻENIA</h2>
+                <p>Produkt nie może być stosowany jako substytut zróżnicowanej diety.</p>
+                <p>Nie stosować u kobiet w ciąży, karmiących piersią oraz dzieci poniżej 18. roku życia.</p>
+                <p>Nie spożywać w przypadku stosowania leków na nadciśnienie, cukrzycę, chorób układu krążenia, ani w przypadku nadwrażliwości na kofeinę.</p>
+                <p>Nie łączyć z alkoholem.</p>
+                <p>Uwaga! Produkt może ulegać zbryleniu z uwagi na higroskopijność składników aktywnych. Zjawisko to nie wpływa na jakość i działanie produktu.</p>
+                <p>Najlepiej spożyć przed końcem: Informacja na spodzie opakowania.</p>
+                <p>Sposób przechowywania: Przechowywać w suchym pomieszczeniu, w zamkniętym opakowaniu, w temperaturze 15–25°C, w sposób niedostępny dla dzieci. Chronić od światła i wilgoci. Po otwarciu spożyć w ciągu 3 miesięcy.</p>
+                <h2>Składniki odżywki</h2>
+                <table class="tabelka">
+                    <thead>
+                        <tr>
+                            <th>Składniki aktywne</th>
+                            <th>w 3,3 g</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Jabłczan Cytruliny</td>
+                            <td>833,33 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym L-Cytrulina</td>
+                            <td>466,67 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Beta-Alanina</td>
+                            <td>800,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Alfaketoglutaran L-Argininy</td>
+                            <td>500,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym L-Arginina</td>
+                            <td>325,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Tauryna</td>
+                            <td>366,67 mg</td>
+                        </tr>
+                        <tr>
+                            <td>L-Tyrozyna</td>
+                            <td>250,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Kofeina Bezwodna</td>
+                            <td>50,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Kwas Alfa-Liponowy</td>
+                            <td>33,33 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Żeń-Szenia Koreańskiego [korzeń] (Panax ginseng) [10% Ginsenozydów]</td>
+                            <td>25,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym Ginsenozydy</td>
+                            <td>2,50 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Magnez</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Różeńca Górskiego [korzeń] (Rhodiola rosea) [3 % Rozawin, 1 % Salidrozydu]</td>
+                            <td>16,67 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym Rozawiny</td>
+                            <td>0,50 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym Salidrozyd</td>
+                            <td>0,17 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Niacyna (mg NE)</td>
+                            <td>8,33 mg (52%)</td>
+                        </tr>
+                        <tr>
+                            <td>Tiamina (Witamina B1)</td>
+                            <td>6,67 mg (606%)</td>
+                        </tr>
+                        <tr>
+                            <td>Witamina B6</td>
+                            <td>1,67 mg (119%)</td>
+                        </tr>
+                        <tr>
+                            <td>Witamina B12</td>
+                            <td>3,00 µg (120%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer" id="kontakt">
+            <div class="footer_tlo">
+                <section class="kontakt">
+                    <h3>Kontakt</h3>
+                    <a href=""><p>+48 777 888 999</p></a>
+                    <a href=""><p>kontak@bull.com</p></a>
+                    <a href=""><p>Pn.-Pt. 9:00-16:00</p></a>
+                </section>
+                <section class="produkty_kontakt">
+                    <h3>Produkty</h3>
+                    <a href="bialko/bialko.html"><p>Białko</p></a>
+                    <a href=""><p>Kreatyna</p></a>
+                    <a href=""><p>Boostery Przedtreningowe</p></a>
+                    <a href=""><p>Witaminy</p></a>
+                    <a href=""><p>Aminokwasy</p></a>
+                </section>
+                <section class="social">
+                    <h3>Odwiedź nas na socialach</h3>
+                    <a href=""><p><i class="icon-facebook-circled"></i>Facebook</p></a>
+                    <a href=""><p><i class="icon-instagram"></i>Instagram</p></a>
+                </section>
+            </div>
+            <div class="copy">
+                <p id="kont">&copy Bull 2024</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

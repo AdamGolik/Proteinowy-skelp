@@ -1,0 +1,274 @@
+<!Doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/res_kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/fontello-51cfb816/fontello-51cfb816/css/fontello.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>BULL - Testosteron</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../../js/sticki.js"></script>
+    <script src="../../js/jquery.scrollTo.min.js"></script>
+    <script src="../../js/scroll.js"></script>
+    <script src="../../js/hamburger.js"></script>
+    <script src="../../js/animacja.js"></script>
+    <script src="przycisk.js"></script>
+</head>
+<body>
+    <div class="contener" >
+        <section class="logo" id="dom">
+            <div class="logo_tlo">
+                <h1>BULL</h1>
+            </div>
+        </section>
+        <div class="nav">
+            <div class="nav_tlo">
+                <div class="hamburger" id="hamburger">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <ul class="menu" id="nav-links">
+                    <li><a href="../../index.html"><i class="icon-home" style="font-size: 18px;"></i></a></li>
+                    <li><a href="../bialko.html">Białko</a></li>
+                    <li><a href="../kreatyna.html">Kreatyna</a></li>
+                    <li><a href="../boost.html">Boostery Przedtreningowe</a></li>
+                    <li><a href="../witaminy.html">Witaminy</a></li>
+                    <li><a id="link7" href="#kont">Kontakt</a></li>
+                </ul>
+                <div class="logo_mini">
+                    <div class="logo_tlo">
+                        <h1>BULL</h1>
+                    </div>
+                </div>
+                <div class="konto">
+                    <a href="../sklep.html"><i class="icon-basket"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="prod_main">
+            <div class="prod_main_tlo">
+                <div class="prod_main_lew">
+                    <img alt="testo" src="../../img/produkty/boost/t1.jpg">
+                    <div class="info_txt szczegol">
+                        <div class="info_txt_tlo fot">
+                            <h4>Ziołowy kompleks stymulantów testosteronu dla mężczyzn.</h4>
+                            <h4>Zawiera starannie wyselekcjonowane ekstrakty roślinne oraz cynk, który przyczynia się do utrzymania prawidłowego poziomu testosteronu we krwi.</h4>
+                            <h4>Jest polecany dla intensywnie trenujących zawodników.</h4>
+                            <h4>Zawiera aż 400 mg Tribulusa.</h4>
+                            <h4>Zawiera 300 mg Ashwagandhy.</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="prod_main_pra">
+                    <p class="nazwa_produktu">Testosteron - testoxx</p>
+                    <p class="smak_prd"> 60kaps </p>
+                    <p class="cena_produktu">Cena: 90zł</p>
+                    <p class="cena_produktu_jedno">Cena jednostkowa:  60kkaps. (1,50 zł / 1kaps.)</p>
+                    <div class="number-input">
+                        <button class="minus">-</button>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="20">
+                        <button class="plus">+</button>
+                        <a class="przycisk_produkt">Dodaj do koszyka</a>
+                    </div>
+                </div>
+
+
+                <!--                script-->
+                <script>
+                    // Funkcja dodająca produkt do koszyka
+                    function addToCart(id, nazwa, cena, ilosc) {
+                        // Usuń "zł" z ceny i skonwertuj ją na liczbę
+                        cena = parseFloat(cena.replace('zł', '').trim());
+                        ilosc = parseInt(ilosc);
+
+                        // Pobierz aktualny koszyk z localStorage
+                        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+                        // Sprawdź, czy produkt już jest w koszyku
+                        const existingProduct = cart.find(product => product.id === id);
+
+                        if (existingProduct) {
+                            // Jeśli produkt istnieje, zwiększ ilość
+                            existingProduct.quantity += ilosc;
+                        } else {
+                            // Jeśli produkt nie istnieje, dodaj go do koszyka
+                            cart.push({ id, nazwa, cena, quantity: ilosc });
+                        }
+
+                        // Zapisz koszyk w localStorage
+                        localStorage.setItem("cart", JSON.stringify(cart));
+
+                        console.log(`${nazwa} dodano do koszyka!`);
+                    }
+
+                    // Dodaj event listener do przycisków z klasą "przycisk_produkt"
+                    document.querySelectorAll('.przycisk_produkt').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            // Pobierz element rodzica produktu
+                            const productElement = event.target.closest('.prod_main_pra');
+
+                            // Pobierz dane produktu z elementów HTML
+                            const id = productElement.getAttribute('data-id');
+                            const nazwa = productElement.querySelector('.nazwa_produktu').textContent;
+                            const cena = productElement.querySelector('.cena_produktu').textContent.replace('Cena: ', '');
+                            const ilosc = productElement.querySelector('#quantity').value;
+
+                            // Wywołaj funkcję addToCart
+                            addToCart(id, nazwa, cena, ilosc);
+                        });
+                    });
+
+                    // Dodaj event listener do przycisków "+" i "-"
+                    document.querySelectorAll('.plus').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
+                            const currentValue = parseInt(quantityInput.value);
+                            quantityInput.value = currentValue + 1;
+                        });
+                    });
+
+                    document.querySelectorAll('.minus').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
+                            const currentValue = parseInt(quantityInput.value);
+                            if (currentValue > 1) {
+                                quantityInput.value = currentValue - 1;
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="info_txt">
+            <div class="info_txt_tlo fot">
+                <h2>OPIS </h2>
+                <p>TESTOXX to specjalistyczny ziołowy preparat dla mężczyzn. Zawiera starannie dobrane ekstrakty roślinne, kwas D-asparaginowy oraz cynk, który pomaga w utrzymaniu prawidłowego poziomu testosteronu we krwi. Zalecana dzienna porcja do spożycia wynosi 2 kapsułki. Suplement diet</p>
+                <h2>Komu polecamy?</h2>
+                <p>Produkt jest dedykowany intensywnie trenującym mężczyznom, w szczególności profesjonalnym sportowcom.</p>
+                <h2>DAWKOWANIE</h2>
+                <p>Jednorazową porcję produktu – 1 kapsułkę – należy popić 300 ml wody. Stosować 2 porcje dziennie, najlepiej 30 minut po posiłku. Nie stosować dłużej niż 3 miesiące.</p>
+                <p>Nie należy przekraczać zalecanej dziennej porcji do spożycia.</p>
+
+                <h2>OSTRZEŻENIA</h2>
+                <p>Produkt nie może być stosowany jako substytut zróżnicowanej diety.</p>
+                <p>Nie stosować u dzieci, kobiet w ciąży ani w trakcie laktacji.</p>
+                <p>Nie stosować w przypadku przyjmowania leków o działaniu uspokajającym, nasennym, przeciwpadaczkowym, na nadciśnienie lub cukrzycę.</p>
+                <p>Zrównoważona dieta i zdrowy tryb życia są ważne.</p>
+                <p>Najlepiej spożyć przed końcem: Data i numer partii znajdują się na spodzie opakowania.</p>
+                <p>Przechowywanie: Przechowywać w suchym miejscu, w szczelnie zamkniętym opakowaniu, w temperaturze 15–25°C, poza zasięgiem dzieci. Chronić przed światłem i wilgocią. Po otwarciu spożyć w ciągu 3 miesięcy.</p>
+
+                <h2>Składniki odżywki</h2>
+                <table class="tabelka">
+                    <thead>
+                        <tr>
+                            <th>Składniki aktywne</th>
+                            <th>2 kapsułki</th>
+                            <th>1 kapsułka</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ekstrakt Ashwagandhy [korzeń] (Withania somnifera) [1,5 % Witanolidy]</td>
+                            <td>600,00 mg</td>
+                            <td>300,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym Witanolidy</td>
+                            <td>9,00 mg</td>
+                            <td>4,50 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Kozieradki [nasiona] (Trigonella foenum-graecum) [50 % Saponin]</td>
+                            <td>400,00 mg</td>
+                            <td>200,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym Saponiny</td>
+                            <td>200,00 mg</td>
+                            <td>100,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Kwas D-Asparaginowy (DAA)</td>
+                            <td>350,00 mg</td>
+                            <td>175,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Tribulusa [owoc] (Tribulus terrestris) [95 % Saponin]</td>
+                            <td>210,00 mg</td>
+                            <td>105,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym Saponiny</td>
+                            <td>200,00 mg</td>
+                            <td>100,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Korzenia Maca (Lepidium meyenii) [4:1]</td>
+                            <td>200,00 mg</td>
+                            <td>100,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Żeń-Szenia Koreańskiego [korzeń] (Panax ginseng) [10 % Ginsenozydów]</td>
+                            <td>60,00 mg</td>
+                            <td>30,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym Ginsenozydy</td>
+                            <td>6,00 mg</td>
+                            <td>3,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Cynk</td>
+                            <td>15,00 mg (150 %)</td>
+                            <td>7,60 mg (75 %)</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Pieprzu Czarnego [owoc] (Piper nigrum) [95 % Piperyny]</td>
+                            <td>2,10 mg</td>
+                            <td>1,05 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym Piperyna</td>
+                            <td>2,00 mg</td>
+                            <td>1,00 mg</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer" id="kontakt">
+            <div class="footer_tlo">
+                <section class="kontakt">
+                    <h3>Kontakt</h3>
+                    <a href=""><p>+48 777 888 999</p></a>
+                    <a href=""><p>kontak@bull.com</p></a>
+                    <a href=""><p>Pn.-Pt. 9:00-16:00</p></a>
+                </section>
+                <section class="produkty_kontakt">
+                    <h3>Produkty</h3>
+                    <a href="bialko/bialko.html"><p>Białko</p></a>
+                    <a href=""><p>Kreatyna</p></a>
+                    <a href=""><p>Boostery Przedtreningowe</p></a>
+                    <a href=""><p>Witaminy</p></a>
+                    <a href=""><p>Aminokwasy</p></a>
+                </section>
+                <section class="social">
+                    <h3>Odwiedź nas na socialach</h3>
+                    <a href=""><p><i class="icon-facebook-circled"></i>Facebook</p></a>
+                    <a href=""><p><i class="icon-instagram"></i>Instagram</p></a>
+                </section>
+            </div>
+            <div class="copy">
+                <p id="kont">&copy Bull 2024</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

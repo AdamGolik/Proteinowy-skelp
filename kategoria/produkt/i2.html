@@ -1,0 +1,341 @@
+<!Doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/res_kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/fontello-51cfb816/fontello-51cfb816/css/fontello.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>BULL - Izolat Białka</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../../js/sticki.js"></script>
+    <script src="../../js/jquery.scrollTo.min.js"></script>
+    <script src="../../js/scroll.js"></script>
+    <script src="../../js/hamburger.js"></script>
+    <script src="../../js/animacja.js"></script>
+    <script src="przycisk.js"></script>
+</head>
+<body>
+    <div class="contener" >
+        <section class="logo" id="dom">
+            <div class="logo_tlo">
+                <h1>BULL</h1>
+            </div>
+        </section>
+        <div class="nav">
+            <div class="nav_tlo">
+                <div class="hamburger" id="hamburger">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <ul class="menu" id="nav-links">
+                    <li><a href="../../index.html"><i class="icon-home" style="font-size: 18px;"></i></a></li>
+                    <li><a href="../bialko.html">Białko</a></li>
+                    <li><a href="../kreatyna.html">Kreatyna</a></li>
+                    <li><a href="../boost.html">Boostery Przedtreningowe</a></li>
+                    <li><a href="../witaminy.html">Witaminy</a></li>
+                    <li><a id="link7" href="#kont">Kontakt</a></li>
+                </ul>
+                <div class="logo_mini">
+                    <div class="logo_tlo">
+                        <h1>BULL</h1>
+                    </div>
+                </div>
+                <div class="konto">
+                    <a href="../sklep.html"><i class="icon-basket"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="prod_main">
+            <div class="prod_main_tlo">
+                <div class="prod_main_lew">
+                    <img alt="bialko_2" src="../../img/produkty/bialko/i2.jpg">
+                    <div class="info_txt szczegol">
+                        <div class="info_txt_tlo fot">
+                            <h4>100% izolatu białka serwatkowego wysokiej jakości.</h4>
+                            <h4>Odpowiednia odżywka białkowa dla osób intensywnie trenujących, które chcą osiągnąć sportową sylwetkę.</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="prod_main_pra" data-id="13">
+                    <p class="nazwa_produktu">Izolat Białka Truskawa Arbuz</p>
+                    <p class="smak_prd"> Truskawa Arbuz - 1000g </p>
+                    <p class="cena_produktu">Cena: 125zł</p>
+                    <p class="cena_produktu_jedno">Cena jednostkowa:  1000g (12,50 zł / 100g)</p>
+                    <div class="number-input">
+                        <button class="minus">-</button>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="20">
+                        <button class="plus">+</button>
+                        <a class="przycisk_produkt">Dodaj do koszyka</a>
+                    </div>
+                </div>
+
+                <!--                script-->
+                <script>
+                    // Funkcja dodająca produkt do koszyka
+                    function addToCart(id, nazwa, cena, ilosc) {
+                        // Usuń "zł" z ceny i skonwertuj ją na liczbę
+                        cena = parseFloat(cena.replace('zł', '').trim());
+                        ilosc = parseInt(ilosc);
+
+                        // Pobierz aktualny koszyk z localStorage
+                        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+                        // Sprawdź, czy produkt już jest w koszyku
+                        const existingProduct = cart.find(product => product.id === id);
+
+                        if (existingProduct) {
+                            // Jeśli produkt istnieje, zwiększ ilość
+                            existingProduct.quantity += ilosc;
+                        } else {
+                            // Jeśli produkt nie istnieje, dodaj go do koszyka
+                            cart.push({ id, nazwa, cena, quantity: ilosc });
+                        }
+
+                        // Zapisz koszyk w localStorage
+                        localStorage.setItem("cart", JSON.stringify(cart));
+
+                        console.log(`${nazwa} dodano do koszyka!`);
+                    }
+
+                    // Dodaj event listener do przycisków z klasą "przycisk_produkt"
+                    document.querySelectorAll('.przycisk_produkt').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            // Pobierz element rodzica produktu
+                            const productElement = event.target.closest('.prod_main_pra');
+
+                            // Pobierz dane produktu z elementów HTML
+                            const id = productElement.getAttribute('data-id');
+                            const nazwa = productElement.querySelector('.nazwa_produktu').textContent;
+                            const cena = productElement.querySelector('.cena_produktu').textContent.replace('Cena: ', '');
+                            const ilosc = productElement.querySelector('#quantity').value;
+
+                            // Wywołaj funkcję addToCart
+                            addToCart(id, nazwa, cena, ilosc);
+                        });
+                    });
+
+                    // Dodaj event listener do przycisków "+" i "-"
+                    document.querySelectorAll('.plus').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
+                            const currentValue = parseInt(quantityInput.value);
+                            quantityInput.value = currentValue + 1;
+                        });
+                    });
+
+                    document.querySelectorAll('.minus').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
+                            const currentValue = parseInt(quantityInput.value);
+                            if (currentValue > 1) {
+                                quantityInput.value = currentValue - 1;
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="info_txt">
+            <div class="info_txt_tlo fot">
+                <h2>Opis izolatu białka</h2>
+                <p>izolat białek serwatkowych CFM, który charakteryzuje się rekordową wartością biologiczną (BV 159), szybkością wchłaniania oraz zawartością aminokwasów BCAA i kwasu L-glutaminowego.</p>
+
+                <p>Proteiny przyczyniają się do wzrostu i utrzymania masy mięśniowej. Produkt uzupełnia dietę w wysokiej klasy wolne od tłuszczu i cukrów białko, niezbędne do budowania muskularnej sylwetki bez ryzyka jej zbędnego otłuszczenia.</p>
+
+                <p>Zalecana porcja do spożycia w ciągu dnia to 90 g.</p>
+
+                <p>Zawiera substancję słodzącą.</p>
+
+                <p>WHEY Protein zawiera wysokiej jakości koncentrat białka serwatkowego, który jest źródłem pełnowartościowych protein zwierzęcych i zawiera wszystkie niezbędne aminokwasy, w tym BCAA i kwas L-glutaminowy. WHEY Protein doskonale się rozpuszcza i szybko się wchłania, a zawarte w nim proteiny przyczyniają się do wzrostu i utrzymania masy mięśniowej.</p>
+
+                <p>Zalecana dzienna porcja do spożycia to 90 g.</p>
+                <h2>DAWKOWANIE</h2>
+                <p>Jednorazową porcję produktu – 30 g (1,5 miarki) - rozpuścić w 200 ml wody lub mleka, używając do tego szejkera lub miksera. Stosować 3 porcje dziennie</p>
+
+                <p>W dni treningowe: I porcja rano po przebudzeniu, II porcja do 1,5 godz. po treningu oraz III porcja przed snem.</p>
+
+                <p>W dni nietreningowe: I porcja rano po przebudzeniu, II porcja pomiędzy posiłkami oraz III porcja przed snem. Nie należy przekraczać zalecanej porcji do spożycia w ciągu dnia.</p>
+
+                <h2>OSTRZEŻENIA</h2>
+                <p>Produkt nie może być stosowany jako substytut zróżnicowanej diety. Preparat nie jest przeznaczony dla dzieci, kobiet w ciąży oraz karmiących. Zrównoważona dieta i zdrowy tryb życia są ważne. </p>
+
+                <p>NAJLEPIEJ SPOŻYĆ PRZED KOŃCEM, NUMER PARTII PRODUKCYJNEJ: Patrz spód opakowania.</p>
+
+                <p>SPOSÓB PRZECHOWYWANIA: Przechowywać w suchym pomieszczeniu, w zamkniętym opakowaniu, w temp. 15–25°C, w sposób niedostępny dla małych dzieci. Chronić od światła i wilgoci. Po otwarciu spożyć w ciągu 3 miesięcy.</p>
+                <h2>Składniki odżywki</h2>
+                <table class="tabelka">
+                    <thead>
+                        <tr>
+                            <th>Wartość odżywcza</th>
+                            <th>w 100 g</th>
+                            <th>w 90 g </th>
+                            <th>w 30 g</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wartość energetyczna</td>
+                            <td>1507 kJ / 355 kcal</td>
+                            <td>1356 kJ / 320 kcal</td>
+                            <td>452 kJ / 107 kcal</td>
+                        </tr>
+                        <tr>
+                            <td>Tłuszcz</td>
+                            <td>0,3 g</td>
+                            <td>0,3 g</td>
+                            <td>0,1 g</td>
+                        </tr>
+                        <tr>
+                            <td>w tym kwasy nasycone</td>
+                            <td>0,1 g</td>
+                            <td>0,1 g</td>
+                            <td>0,0 g</td>
+                        </tr>
+                        <tr>
+                            <td>Węglowodany</td>
+                            <td>2,5 g</td>
+                            <td>2,3 g</td>
+                            <td>0,8 g</td>
+                        </tr>
+                        <tr>
+                            <td>w tym cukry</td>
+                            <td>0,4 g</td>
+                            <td>0,4 g</td>
+                            <td>0,1 g</td>
+                        </tr>
+                        <tr>
+                            <td>Białko</td>
+                            <td>85,5 g</td>
+                            <td>77,0 g</td>
+                            <td>25,7 g</td>
+                        </tr>
+                        <tr>
+                            <td>Sól</td>
+                            <td>1,1 g</td>
+                            <td>1,0 g</td>
+                            <td>0,3 g</td>
+                        </tr>
+                        <tr>
+                            <td>Izolat Białka Serwatkowego CFM</td>
+                            <td>91,7 g</td>
+                            <td>82,5 g</td>
+                            <td>27,5 g</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h2>Profil aminokwasów</h2>
+                <table class="tabelka">
+                    <thead>
+                        <tr>
+                            <th>Aminokwasy białkowe</th>
+                            <th>w %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Kwas L-Glutaminowy</td>
+                            <td>15,30 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Leucyna</td>
+                            <td>9,09 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Lizyna</td>
+                            <td>8,31 %</td>
+                        </tr>
+                        <tr>
+                            <td>Kwas L-Asparaginowy</td>
+                            <td>7,63 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Treonina</td>
+                            <td>5,83 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Izoleucyna</td>
+                            <td>5,60 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Prolina</td>
+                            <td>5,28 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Walina</td>
+                            <td>4,79 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Alanina</td>
+                            <td>4,39 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Seryna</td>
+                            <td>4,01 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Fenyloalanina</td>
+                            <td>2,49 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Tyrozyna</td>
+                            <td>2,35 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Metionina</td>
+                            <td>1,93 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Arginina</td>
+                            <td>1,68 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Glicyna</td>
+                            <td>1,41 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Histydyna</td>
+                            <td>1,40 %</td>
+                        </tr>
+                        <tr>
+                            <td>L-Cysteina</td>
+                            <td>1,22 %</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer" id="kontakt">
+            <div class="footer_tlo">
+                <section class="kontakt">
+                    <h3>Kontakt</h3>
+                    <a href=""><p>+48 777 888 999</p></a>
+                    <a href=""><p>kontak@bull.com</p></a>
+                    <a href=""><p>Pn.-Pt. 9:00-16:00</p></a>
+                </section>
+                <section class="produkty_kontakt">
+                    <h3>Produkty</h3>
+                    <a href="bialko/bialko.html"><p>Białko</p></a>
+                    <a href=""><p>Kreatyna</p></a>
+                    <a href=""><p>Boostery Przedtreningowe</p></a>
+                    <a href=""><p>Witaminy</p></a>
+                    <a href=""><p>Aminokwasy</p></a>
+                </section>
+                <section class="social">
+                    <h3>Odwiedź nas na socialach</h3>
+                    <a href=""><p><i class="icon-facebook-circled"></i>Facebook</p></a>
+                    <a href=""><p><i class="icon-instagram"></i>Instagram</p></a>
+                </section>
+            </div>
+            <div class="copy">
+                <p id="kont">&copy Bull 2024</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

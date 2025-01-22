@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css" type="text/css">
+    <link rel="stylesheet" href="../css/kategorie/kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../css/kategorie/res_kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../css/res.css" type="text/css">
+    <link rel="stylesheet" href="../css/fontello-51cfb816/fontello-51cfb816/css/fontello.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>BULL - koszyk </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../js/sticki.js"></script>
+    <script src="../js/slider.js"></script>
+    <script src="../js/jquery.scrollTo.min.js"></script>
+    <script src="../js/scroll.js"></script>
+    <script src="../js/hamburger.js"></script>
+    <script src="../js/animacja.js"></script>
+    <title>Koszyk - Finalizacja</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333333;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        .cart-container {
+            background-color: #838383;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+
+        .cart-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #555555;
+            border-radius: 4px;
+        }
+
+        .cart-item span {
+            margin: 0 10px;
+        }
+
+        .cart-button {
+            background-color: #666666;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .cart-button:hover {
+            background-color: #777777;
+        }
+
+        .cart-button-remove {
+            background-color: #cc3333;
+        }
+
+        .cart-button-remove:hover {
+            background-color: #ff4444;
+        }
+
+        .finalize-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .finalize-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .empty-cart {
+            text-align: center;
+            font-size: 18px;
+            color: #bbbbbb;
+        }
+
+        .form-container {
+            background-color: #555555;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #444444;
+            color: white;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #bbbbbb;
+        }
+
+        .form-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<!--nav-->
+<section class="logo" id="dom">
+    <div class="logo_tlo">
+        <h1>BULL</h1>
+    </div>
+</section>
+<div class="nav">
+    <div class="nav_tlo">
+        <div class="hamburger" id="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <ul class="menu" id="nav-links">
+            <li><a href="../index.html"><i class="icon-home" style="font-size: 18px;"></i></a></li>
+            <li><a href="bialko.html">Białko</a></li>
+            <li><a id="link2" href="#dom">Kreatyna</a></li>
+            <li><a href="boost.html">Boostery Przedtreningowe</a></li>
+            <li><a href="witaminy.html">Witaminy</a></li>
+            <li><a id="link7" href="#kont">Kontakt</a></li>
+        </ul>
+        <div class="logo_mini">
+            <div class="logo_tlo">
+                <h1>BULL</h1>
+            </div>
+        </div>
+        <div class="konto">
+            <a href="Marcinek/index.html"><i class="icon-basket"></i></a>
+        </div>
+    </div>
+</div>
+<!--skelp koszyk -->
+
+<h1>Twój koszyk</h1>
+<div class="cart-container" id="cart-container"></div>
+
+<button class="finalize-btn" id="finalize-btn">Przejdź do podsumowania i wybierz płatność</button>
+
+<div id="order-summary" style="display: none;">
+    <h2>Podsumowanie zamówienia</h2>
+    <div id="summary-container"></div>
+
+    <form id="payment-form">
+        <div class="form-group">
+            <label>Wybierz metodę płatności:</label><br>
+            <input type="radio" id="payment-bank" name="payment-method" value="przelew" checked> Przelew<br>
+            <input type="radio" id="payment-cod" name="payment-method" value="za pobraniem"> Za pobraniem<br>
+        </div>
+
+        <div class="form-group">
+            <label>Wybierz metodę dostawy:</label><br>
+            <input type="radio" id="delivery-paczkomat" name="delivery-method" value="paczkomat" checked> Paczkomat<br>
+            <input type="radio" id="delivery-kurier" name="delivery-method" value="kurier"> Kurier<br>
+            <input type="radio" id="delivery-poczta" name="delivery-method" value="poczta"> Poczta<br>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Imię i nazwisko:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Ulica:</label>
+            <input type="text" id="address" name="address" required>
+        </div>
+
+        <div class="form-group">
+            <label for="postal-code">Kod pocztowy:</label>
+            <input type="text" id="postal-code" name="postal-code" required>
+        </div>
+
+        <div class="form-group">
+            <label for="city">Miasto:</label>
+            <input type="text" id="city" name="city" required>
+        </div>
+
+        <div class="form-group">
+            <label for="comments">Uwagi:</label>
+            <textarea id="comments" name="comments"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Telefon:</label>
+            <input type="text" id="phone" name="phone" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">Akceptuję regulamin</label>
+        </div>
+
+        <button type="submit" class="submit-btn">Złóż zamówienie</button>
+    </form>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+    // Importujemy Firebase i Firestore
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+    // Twoja konfiguracja Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyCmCxhe9zhjWlKI1uTJLMRHhqyd2pYvt6k",
+        authDomain: "sklep-bull.firebaseapp.com",
+        projectId: "sklep-bull",
+        storageBucket: "sklep-bull.firebasestorage.app",
+        messagingSenderId: "74364332301",
+        appId: "1:74364332301:web:4b86ce6c8bbd2d2effa844"
+    };
+
+    // Inicjalizacja Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Funkcja dodająca zamówienie do Firestore
+    async function submitOrderToFirebase(orderData) {
+        try {
+            const docRef = await addDoc(collection(db, "zamowienia"), orderData);
+            console.log("Zamówienie zapisane w Firebase z ID: ", docRef.id);
+        } catch (e) {
+            console.error("Błąd podczas zapisywania zamówienia: ", e);
+        }
+    }
+
+    // Funkcja obsługująca złożenie zamówienia
+    document.getElementById('payment-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+        const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked').value;
+
+        const orderData = {
+            email,
+            phone,
+            paymentMethod,
+            deliveryMethod,
+            products: JSON.parse(localStorage.getItem("cart")),
+            name: document.getElementById('name').value,
+            address: document.getElementById('address').value,
+            postalCode: document.getElementById('postal-code').value,
+            city: document.getElementById('city').value,
+            comments: document.getElementById('comments').value,
+        };
+
+        // Zapisz zamówienie do Firebase
+        submitOrderToFirebase(orderData);
+
+        // Wysłanie potwierdzenia e-mail i SMS (symulacja)
+        alert('Zamówienie zostało złożone!');
+        console.log('E-mail wysłany do:', email);
+        console.log('SMS wysłany na numer:', phone);
+        console.log('Wybrana metoda płatności:', paymentMethod);
+        console.log('Wybrana metoda dostawy:', deliveryMethod);
+
+        // Czyszczenie koszyka
+        localStorage.removeItem('cart');
+        displayCart();
+        document.getElementById('order-summary').style.display = 'none';
+    });
+
+    function displayCart() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const cartContainer = document.getElementById('cart-container');
+
+        if (cart.length === 0) {
+            cartContainer.innerHTML = '<p class="empty-cart">Twój koszyk jest pusty.</p>';
+            return;
+        }
+
+        let html = '<ul class="cart-list">';
+        cart.forEach(product => {
+            html += `<li class="cart-item">
+                    <span>${product.nazwa}</span>
+                    <div>
+                        <button class="cart-button cart-button-minus" data-id="${product.id}">-</button>
+                        <span>${product.quantity} szt.</span>
+                        <button class="cart-button cart-button-plus" data-id="${product.id}">+</button>
+                        <span>${product.cena} zł/szt.</span>
+                    </div>
+                    <button class="cart-button cart-button-remove" data-id="${product.id}">Usuń</button>
+                </li>`;
+        });
+        html += '</ul>';
+        cartContainer.innerHTML = html;
+
+        document.querySelectorAll('.cart-button-plus').forEach(button => {
+            button.addEventListener('click', function () {
+                const productId = button.getAttribute('data-id');
+                updateCartQuantity(productId, 1);
+            });
+        });
+
+        document.querySelectorAll('.cart-button-minus').forEach(button => {
+            button.addEventListener('click', function () {
+                const productId = button.getAttribute('data-id');
+                updateCartQuantity(productId, -1);
+            });
+        });
+
+        document.querySelectorAll('.cart-button-remove').forEach(button => {
+            button.addEventListener('click', function () {
+                const productId = button.getAttribute('data-id');
+                removeFromCart(productId);
+            });
+        });
+    }
+
+    // Funkcja do aktualizacji ilości produktu w koszyku
+    function updateCartQuantity(id, change) {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const product = cart.find(p => p.id === id);
+        if (product) {
+            product.quantity += change;
+            if (product.quantity <= 0) {
+                removeFromCart(id);
+            } else {
+                localStorage.setItem("cart", JSON.stringify(cart));
+                displayCart();
+            }
+        }
+    }
+
+    // Funkcja usuwająca produkt z koszyka
+    function removeFromCart(id) {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart = cart.filter(item => item.id !== id);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        displayCart();
+    }
+
+    // Obsługuje kliknięcie na przycisk "Przejdź do podsumowania"
+    document.getElementById('finalize-btn').addEventListener('click', function () {
+        document.getElementById('order-summary').style.display = 'block';
+        displayCartSummary();
+    });
+
+    // Wyświetlanie podsumowania koszyka
+    function displayCartSummary() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const summaryContainer = document.getElementById('summary-container');
+        summaryContainer.innerHTML = '';
+
+        cart.forEach(product => {
+            summaryContainer.innerHTML += `<p>${product.nazwa} - ${product.quantity} szt. - ${product.cena} zł/szt.</p>`;
+        });
+    }
+
+    // Obsługuje formularz zamówienia
+    document.getElementById('payment-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+        const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked').value;
+
+        // Wysyłanie e-maila i SMS-a (symulacja)
+        console.log('E-mail wysłany do:', email);
+        console.log('SMS wysłany na numer:', phone);
+        console.log('Wybrana metoda płatności:', paymentMethod);
+        console.log('Wybrana metoda dostawy:', deliveryMethod);
+
+        localStorage.removeItem('cart');
+        displayCart();
+        document.getElementById('order-summary').style.display = 'none';
+    });
+
+    displayCart();
+</script>
+<!--fotter-->
+<div class="footer" id="kont">
+    <div class="footer_tlo">
+        <section class="kontakt">
+            <h3>Kontakt</h3>
+            <a><p>+48 777 888 999</p></a>
+            <a><p>kontak.bull@gmail.com</p></a>
+            <a><p>Pn.-Pt. 9:00-16:00</p></a>
+            <a class="regulamin" href=""><p>Regulamin</p></a>
+        </section>
+        <section class="produkty_kontakt">
+            <h3>Produkty</h3>
+            <a href="bialko.html"><p>Białko</p></a>
+            <a id="link8" href="#dom"><p>Kreatyna</p></a>
+            <a href="boost.html"><p>Boostery Przedtreningowe</p></a>
+            <a href="witaminy.html"><p>Witaminy</p></a>
+        </section>
+        <section class="social">
+            <h3>Odwiedź nas na socialach</h3>
+            <a href=""><p><i class="icon-facebook-circled"></i>Facebook</p></a>
+            <a href=""><p><i class="icon-instagram"></i>Instagram</p></a>
+        </section>
+    </div>
+    <div class="copy">
+        <p>&copy Bull 2024</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!Doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/res_kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/fontello-51cfb816/fontello-51cfb816/css/fontello.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>BULL - Spalacz tłuszczu</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../../js/sticki.js"></script>
+    <script src="../../js/jquery.scrollTo.min.js"></script>
+    <script src="../../js/scroll.js"></script>
+    <script src="../../js/hamburger.js"></script>
+    <script src="../../js/animacja.js"></script>
+    <script src="przycisk.js"></script>
+</head>
+<body>
+    <div class="contener" >
+        <section class="logo" id="dom">
+            <div class="logo_tlo">
+                <h1>BULL</h1>
+            </div>
+        </section>
+        <div class="nav">
+            <div class="nav_tlo">
+                <div class="hamburger" id="hamburger">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <ul class="menu" id="nav-links">
+                    <li><a href="../../index.html"><i class="icon-home" style="font-size: 18px;"></i></a></li>
+                    <li><a href="../bialko.html">Białko</a></li>
+                    <li><a href="../kreatyna.html">Kreatyna</a></li>
+                    <li><a href="../boost.html">Boostery Przedtreningowe</a></li>
+                    <li><a href="../witaminy.html">Witaminy</a></li>
+                    <li><a id="link7" href="#kont">Kontakt</a></li>
+                </ul>
+                <div class="logo_mini">
+                    <div class="logo_tlo">
+                        <h1>BULL</h1>
+                    </div>
+                </div>
+                <div class="konto">
+                    <a href="../sklep.html"><i class="icon-basket"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="prod_main">
+            <div class="prod_main_tlo">
+                <div class="prod_main_lew">
+                    <img alt="boos2" src="../../img/produkty/boost/sp2.jpg">
+                    <div class="info_txt szczegol">
+                        <div class="info_txt_tlo fot">
+                            <h4>Zawiera kwas pantotenowy, który przyczynia się do utrzymania prawidłowego metabolizmu energetycznego oraz do redukcji zmęczenia i znużenia.</h4>
+                            <h4>Polecany jest szczególności w okresie kształtowania rzeźby i osobom dążącym do redukcji tkanki tłuszczowej.</h4>
+                            <h4>Bardzo dobra przyswajalność.</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="prod_main_pra" data-id="21">
+                    <p class="nazwa_produktu">Spalacz tłuszczu</p>
+                    <p class="smak_prd"> Cola - 500ml </p>
+                    <p class="cena_produktu">Cena: 50zł</p>
+                    <p class="cena_produktu_jedno">Cena jednostkowa:  500ml (10,00 zł / 100ml)</p>
+                    <div class="number-input">
+                        <button class="minus">-</button>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="20">
+                        <button class="plus">+</button>
+                        <a class="przycisk_produkt">Dodaj do koszyka</a>
+                    </div>
+                </div>
+
+                <!--                script-->
+                <script>
+                    // Funkcja dodająca produkt do koszyka
+                    function addToCart(id, nazwa, cena, ilosc) {
+                        // Usuń "zł" z ceny i skonwertuj ją na liczbę
+                        cena = parseFloat(cena.replace('zł', '').trim());
+                        ilosc = parseInt(ilosc);
+
+                        // Pobierz aktualny koszyk z localStorage
+                        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+                        // Sprawdź, czy produkt już jest w koszyku
+                        const existingProduct = cart.find(product => product.id === id);
+
+                        if (existingProduct) {
+                            // Jeśli produkt istnieje, zwiększ ilość
+                            existingProduct.quantity += ilosc;
+                        } else {
+                            // Jeśli produkt nie istnieje, dodaj go do koszyka
+                            cart.push({ id, nazwa, cena, quantity: ilosc });
+                        }
+
+                        // Zapisz koszyk w localStorage
+                        localStorage.setItem("cart", JSON.stringify(cart));
+
+                        console.log(`${nazwa} dodano do koszyka!`);
+                    }
+
+                    // Dodaj event listener do przycisków z klasą "przycisk_produkt"
+                    document.querySelectorAll('.przycisk_produkt').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            // Pobierz element rodzica produktu
+                            const productElement = event.target.closest('.prod_main_pra');
+
+                            // Pobierz dane produktu z elementów HTML
+                            const id = productElement.getAttribute('data-id');
+                            const nazwa = productElement.querySelector('.nazwa_produktu').textContent;
+                            const cena = productElement.querySelector('.cena_produktu').textContent.replace('Cena: ', '');
+                            const ilosc = productElement.querySelector('#quantity').value;
+
+                            // Wywołaj funkcję addToCart
+                            addToCart(id, nazwa, cena, ilosc);
+                        });
+                    });
+
+                    // Dodaj event listener do przycisków "+" i "-"
+                    document.querySelectorAll('.plus').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
+                            const currentValue = parseInt(quantityInput.value);
+                            quantityInput.value = currentValue + 1;
+                        });
+                    });
+
+                    document.querySelectorAll('.minus').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
+                            const currentValue = parseInt(quantityInput.value);
+                            if (currentValue > 1) {
+                                quantityInput.value = currentValue - 1;
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="info_txt">
+            <div class="info_txt_tlo fot">
+                <h2>OPIS Spalacza Tłuszczu</h2>
+                <p>Suplement diety w formie napoju energetyzującego z substancjami słodzącymi. Zawiera kofeinę (100 mg w dziennej porcji 45 ml), dlatego nie zaleca się stosowania u dzieci i kobiet w ciąży.</p>
+
+                <p>Spalacz tłuszczu to płynna L-karnityna wzbogacona ekstraktami ziołowymi, kofeiną oraz kwasem pantotenowym. Kwas pantotenowy wspiera prawidłowy metabolizm energetyczny i pomaga zmniejszyć uczucie zmęczenia i znużenia.</p>
+
+                <p>Zalecana dzienna porcja do spożycia wynosi 45 ml.</p>
+                <h2>Komu polecamy?</h2>
+                <p>Produkt szczególnie polecany kulturystom podczas budowania rzeźby oraz osobom dążącym do redukcji tkanki tłuszczowej.</p>
+                <h2>DAWKOWANIE</h2>
+                <p>Jednorazową porcję – 15 ml – należy odmierzyć za pomocą miarki dołączonej do opakowania. Stosować 3 porcje dziennie podczas posiłków, najlepiej na 30 minut przed treningiem.</p>
+                <p>Nie spożywać na czczo.</p>
+                <p>Nie spożywać dziennej ilości 800 mg 3-galusanu (-) epigalokatechiny lub większej.</p>
+                <p>Nie stosować przed snem.</p>
+                <p>Nie łączyć z innymi produktami zawierającymi kofeinę lub substancje o podobnym działaniu.</p>
+                <p>Unikać jednoczesnego stosowania innych produktów zawierających zieloną herbatę.</p>
+                <p>Nie stosować dłużej niż trzy miesiące.</p>
+                <p>Wstrząsnąć przed użyciem.</p>
+                <p>Nie przekraczać zalecanej dziennej porcji do spożycia.</p>
+                <h2>OSTRZEŻENIA</h2>
+                <p>Produkt nie jest substytutem zróżnicowanej diety. Nie stosować u dzieci poniżej 18. roku życia, kobiet w ciąży i karmiących piersią. Produkt nie powinien być spożywany w przypadku chorób układu krążenia lub nadwrażliwości na kofeinę. Unikać łączenia z alkoholem.</p>
+                <p>Zrównoważona dieta i zdrowy styl życia mają kluczowe znaczenie dla zdrowia.</p>
+                <p>Najlepiej spożyć przed końcem: Data oraz numer partii znajdują się na dolnej części etykiety.</p>
+                <p>Przechowywanie: Przechowywać w suchym miejscu, w szczelnie zamkniętym opakowaniu, w temperaturze 10–25°C, poza zasięgiem dzieci. Chronić przed działaniem słońca oraz przemrożeniem.</p>
+
+                <h2>Składniki odżywki</h2>
+                <table class="tabelka">
+                    <thead>
+                        <tr>
+                            <th>Składniki aktywne</th>
+                            <th>w 45 ml</th>
+                            <th>w 15 ml</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>L-Karnityna</td>
+                            <td>1500,00 mg</td>
+                            <td>500,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Guarany [nasiona] (Paullinia cupana) [10 % Kofeiny]</td>
+                            <td>800,00 mg</td>
+                            <td>266,67 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Kofeina (całkowita zawartość)</td>
+                            <td>100,00 mg</td>
+                            <td>33,33 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Żeń-Szenia Koreańskiego [korzeń] (Panax ginseng) [10 % Ginsenozydów]</td>
+                            <td>25,00 mg</td>
+                            <td>8,33 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym Ginsenozydy</td>
+                            <td>2,50 mg</td>
+                            <td>0,83 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Zielonej Herbaty [liście] (Camellia sinensis) [80 % Polifenoli, 30 % EGCG]</td>
+                            <td>25,00 mg</td>
+                            <td>8,33 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Ekstrakt Białej Herbaty [liście] (Camellia sinensis) [80 % Polifenoli, 30 % EGCG]</td>
+                            <td>25,00 mg</td>
+                            <td>8,33 mg</td>
+                        </tr>
+                        <tr>
+                            <td>w tym EGCG</td>
+                            <td>15,00 mg</td>
+                            <td>5,00 mg</td>
+                        </tr>
+                        <tr>
+                            <td>Kwas Pantotenowy</td>
+                            <td>7,50 mg (125 %)</td>
+                            <td>2,50 mg (42 %)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer" id="kontakt">
+            <div class="footer_tlo">
+                <section class="kontakt">
+                    <h3>Kontakt</h3>
+                    <a href=""><p>+48 777 888 999</p></a>
+                    <a href=""><p>kontak@bull.com</p></a>
+                    <a href=""><p>Pn.-Pt. 9:00-16:00</p></a>
+                </section>
+                <section class="produkty_kontakt">
+                    <h3>Produkty</h3>
+                    <a href="bialko/bialko.html"><p>Białko</p></a>
+                    <a href=""><p>Kreatyna</p></a>
+                    <a href=""><p>Boostery Przedtreningowe</p></a>
+                    <a href=""><p>Witaminy</p></a>
+                    <a href=""><p>Aminokwasy</p></a>
+                </section>
+                <section class="social">
+                    <h3>Odwiedź nas na socialach</h3>
+                    <a href=""><p><i class="icon-facebook-circled"></i>Facebook</p></a>
+                    <a href=""><p><i class="icon-instagram"></i>Instagram</p></a>
+                </section>
+            </div>
+            <div class="copy">
+                <p id="kont">&copy Bull 2024</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
