@@ -1,0 +1,340 @@
+body 
+{
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #dddddd;
+    font-family: "Montserrat", sans-serif;
+    overflow-x: hidden;
+}
+.logo,.nav,.start,.slider,.suple,.produkt,.footer,.oferta,.tyt,.nav_con,.pod_tyt,.info,.info_txt,.prod_main
+{
+    width: 100%;
+    height: auto;
+}
+.logo
+{
+    background-color: #444444;
+}
+.logo_tlo
+{
+    max-width: 500px;
+    text-align: center;
+    font-size: 50px;
+    color: #CCCCCC;
+}
+.logo_tlo h1
+{
+    margin: 0;
+    padding: 10px;
+    font-family: none;
+}
+.nav
+{
+    z-index: 1;
+    background-color: #333333;
+}
+.logo_tlo,.start_tlo,.produkt_con_tlo,.tyt_h,.footer_tlo,.copy,.oferta_tlo,.tyt_tlo,nav_con_tlo,.pod_tyt_tlo,.info_tlo,.info_txt_tlo,.prod_main_tlo
+{
+    max-width: 1300px;
+    height: auto;
+    margin: 0 auto;
+}
+.nav_tlo,.nav_con_tlo
+{
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+.menu,.menu_con 
+{
+    display: flex;
+    list-style-type: none;
+    text-transform: uppercase;
+}
+.menu a,.menu_con a
+{
+    display: block;
+    line-height: 60px;
+    padding: 0px 20px;
+    color: #CCCCCC;
+    text-decoration: none;
+    font-size: 14px;
+    opacity: 85%;
+    transition: transform 0.3s, opacity 0.3s, color 0.3s;
+}
+.konto a
+{
+    opacity: 85%;
+    height: 60px;
+    line-height: 60px;
+    font-size: 28px;
+    margin-right: 20px; 
+    color: #CCCCCC;
+    transition: transform 0.3s;
+}
+.menu a:hover,.menu_con a:hover,.konto a:hover,.regulamin p:hover,.social p:hover,.produkty_kontakt p:hover
+{
+    color:snow;
+    opacity: 1;
+    transform: translateY(-5px);
+}
+.start
+{
+    margin-top: 50px;
+}
+.start_tlo
+{
+    text-align: left;
+}
+.start_tlo h2 
+{
+    font-size: 26px;
+}
+.start_tlo h3 
+{
+    font-size: 32px;
+    text-align: center;
+    margin: 40px 0px;
+}
+.start_tlo p
+{
+    font-size: 18px;
+    padding: 0px 14px;
+}
+.slider
+{
+    margin: 0 auto;
+    overflow: hidden;
+    margin: 50px 0px;
+    border-top: 4px solid black;
+    border-bottom: 4px solid black;
+}
+.slider_tlo
+{
+    display: flex;
+    width: 300%; 
+    transition: transform 0.5s ease-in-out;
+}
+.slider_tlo img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+.produkt_tlo
+{
+    background: #333333;
+    height: 60px;
+    line-height: 60px;
+    margin-bottom: 30px;    
+}
+.tyt_h
+{
+    padding-left: 100px;
+    font-size: 20px;
+    text-transform: uppercase;
+    color: #cccccc;
+}
+.produkt_con_txt
+{
+    padding: 15px 0px 0px;
+    text-align: center;
+}
+.produkt_con
+{
+    display: inline-block;
+    vertical-align: top; 
+    margin-right: 10px; 
+    margin-bottom: 10px;
+}
+.produkt_con:hover
+{
+    cursor: pointer;
+}
+.produkt_con_img
+{
+    cursor: pointer;
+    object-fit: cover;
+    width: 300px;
+    height: 350px;
+    opacity: 90%;
+    transition: transform 0.4s, filter 0.4s, opacity 0.4s;
+}
+.produkt_con_img:hover
+{
+    opacity: 100%;
+    filter: drop-shadow(8px 8px 8px black);
+    transform: translateY(-10px);
+}
+.produkt_con_img img
+{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 25px;
+}
+ .produkt_con_tlo
+{
+    margin: 0 auto;
+    text-align: center;
+}
+.cena
+{
+    font-weight: 700;
+}
+.przycisk
+{
+    display: block;
+    text-decoration: none;
+    width: 500px;
+    height: 70px;
+    background: #333333;
+    margin: 50px auto;
+    border-radius: 30px;
+    box-shadow: 0 4px 6px rgba(000, 000, 000, 1.2);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+}
+.przycisk:hover
+{
+    background: #343434;
+    transform: translateY(-10px);
+    box-shadow: 0 8px 12px rgba(000, 000, 000, 0.80);
+    cursor: pointer;
+}
+.przycisk p
+{
+    text-align: center;
+    line-height: 70px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #cccccc
+}
+.przycisk p:hover
+{
+    color: snow;
+}
+.footer
+{
+    background: #333333;
+    margin-top: 60px;
+    padding-top: 15px;
+    padding-bottom: 30px;
+}
+.footer_tlo
+{
+    display: flex;
+    color: #CCCCCC;
+}
+.kontakt,.social,.produkty_kontakt
+{
+    width: 30%;
+    text-align: left;
+    margin-left: 40px;
+}
+.kontakt a,.social a,.produkty_kontakt a
+{
+    font-size: 18px;
+    text-decoration: none;
+    list-style-type: none;
+    color: #cccccc;
+}
+.regulamin p,.social p,.produkty_kontakt p
+{
+     transition: transform 0.3s;
+}
+.copy
+{
+    margin-top: 50px; 
+    text-align: center;
+}
+.copy p
+{
+    margin: 0;
+    font-size: 20px;
+    color: #CCCCCC;
+}
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #cccccc;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #303030;
+    border-radius: 10px;
+}
+.sticky
+{
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index:100;
+}
+.top
+{
+    height: 50px;
+}
+.hamburger {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    top: 0px;
+    left: 40px;
+}
+
+.hamburger .bar {
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    transition: 0.3s;
+}
+.logo_mini
+{
+    display: none;
+}
+.start_txt1,
+.start_txt3 {
+    transform: translateX(-100%); /* Z lewej strony */
+    transition: transform 2s ease-out;
+}
+.start_txt2 {
+    transform: translateX(100%); /* Z prawej strony */
+    transition: transform 2s ease-out;
+}
+/* Końcowe pozycje dla animacji */
+.start_txt1.visible,
+.start_txt2.visible,
+.start_txt3.visible {
+    transform: translateX(0);
+}
+.fot 
+{
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease-out, transform 1.5s ease-out;
+}
+.fot.visible 
+{
+    opacity: 1;
+    transform: translateY(0);
+}
+.hamburger.open .bar:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+    background: red;
+}
+
+.hamburger.open .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.open .bar:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+    background: red;
+}

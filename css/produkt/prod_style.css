@@ -1,0 +1,126 @@
+.prod_main_tlo 
+{
+    display: flex;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    border-radius: 10px;
+    max-width: 1200px;
+    padding: 20px 0px;
+}
+
+.prod_main_lew 
+{
+    width: 55%;
+    text-align: center;
+}
+
+.prod_main_lew img 
+{
+    width: 90%;
+    border-radius: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.prod_main_lew img:hover 
+{
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+.prod_main_pra 
+{
+    width: 40%;
+    margin: 0 auto;
+    padding-top: 60px;
+}
+.nazwa_produktu 
+{
+    font-size: 32px;
+    font-weight: bold;
+    color: #111111;
+    margin-bottom: 10px;
+}
+.smak_prd, .cena_produktu 
+{
+    font-size: 20px;
+    color: #555;
+    margin: 5px 0;
+}
+.number-input 
+{
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.number-input input 
+{
+    width: 60px;
+    height: 40px;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.number-input button 
+{
+    width: 40px;
+    height: 40px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.number-input button:hover 
+{
+    background-color: #ddd;
+}
+
+.przycisk_produkt 
+{
+    margin-left: 20px;
+    padding: 10px 20px;
+    background-color: #333333;
+    color: #fff;
+    border-radius: 20px;
+    font-size: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.przycisk_produkt:hover 
+{
+    background-color: #343434;
+    transform: translateY(-3px);
+}
+
+/* Tabela */
+.tabelka {
+    width: 90%;
+    margin: 30px auto;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+}
+
+.tabelka thead 
+{
+    background-color: #333333;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.tabelka th, .tabelka td 
+{
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+.info_txt_tlo p 
+{
+    padding-left: 20px;
+}
