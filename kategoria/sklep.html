@@ -190,6 +190,8 @@
         </div>
     </div>
 </div>
+<!--skelp koszyk -->
+
 <h1>Twój koszyk</h1>
 <div class="cart-container" id="cart-container"></div>
 
@@ -257,10 +259,13 @@
     </form>
 </div>
 
+<!-- Firebase SDK -->
 <script type="module">
+    // Importujemy Firebase i Firestore
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
+    // Twoja konfiguracja Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyCmCxhe9zhjWlKI1uTJLMRHhqyd2pYvt6k",
         authDomain: "sklep-bull.firebaseapp.com",
@@ -270,25 +275,34 @@
         appId: "1:74364332301:web:4b86ce6c8bbd2d2effa844"
     };
 
+    // Inicjalizacja Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Funkcja pobierająca dane o produkcie
-    async function getProductDataById(productId) {
-        const productRef = doc(db, "produkty", productId);
-        const docSnap = await getDoc(productRef);
-        return docSnap.exists() ? docSnap.data() : null;
+    // Funkcja dodająca zamówienie do Firestore
+    async function submitOrderToFirebase(orderData) {
+        try {
+            const docRef = await addDoc(collection(db, "zamowienia"), orderData);
+            console.log("Zamówienie zapisane w Firebase z ID: ", docRef.id);
+        } catch (e) {
+            console.error("Błąd podczas zapisywania zamówienia: ", e);
+        }
     }
 
     // Funkcja obsługująca złożenie zamówienia
-    document.getElementById('payment-form').addEventListener('submit', async function (event) {
+    document.getElementById('payment-form').addEventListener('submit', function (event) {
         event.preventDefault();
 
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+        const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked').value;
+
         const orderData = {
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            paymentMethod: document.querySelector('input[name="payment-method"]:checked').value,
-            deliveryMethod: document.querySelector('input[name="delivery-method"]:checked').value,
+            email,
+            phone,
+            paymentMethod,
+            deliveryMethod,
             products: JSON.parse(localStorage.getItem("cart")),
             name: document.getElementById('name').value,
             address: document.getElementById('address').value,
@@ -297,137 +311,135 @@
             comments: document.getElementById('comments').value,
         };
 
-        // Dodanie zamówienia do Firebase
-        try {
-            const docRef = await addDoc(collection(db, "zamowienia"), orderData);
-            console.log("Zamówienie zapisane w Firebase z ID: ", docRef.id);
-            alert('Zamówienie zostało złożone!');
+        // Zapisz zamówienie do Firebase
+        submitOrderToFirebase(orderData);
 
-            // Po złożeniu zamówienia wyczyść koszyk
-            localStorage.removeItem('cart');
-            displayCart(); // Zaktualizowanie widoku (pokazanie pustego koszyka)
+        // Wysłanie potwierdzenia e-mail i SMS (symulacja)
+        alert('Zamówienie zostało złożone!');
+        console.log('E-mail wysłany do:', email);
+        console.log('SMS wysłany na numer:', phone);
+        console.log('Wybrana metoda płatności:', paymentMethod);
+        console.log('Wybrana metoda dostawy:', deliveryMethod);
 
-            window.location.href = "index.html";  // Zmieniamy stronę na index.html
-
-        } catch (e) {
-            console.error("Błąd podczas zapisywania zamówienia: ", e);
-        }
-
-        // Wyczyść koszyk
+        // Czyszczenie koszyka
         localStorage.removeItem('cart');
         displayCart();
+        document.getElementById('order-summary').style.display = 'none';
     });
 
-    // Wyświetlanie koszyka
     function displayCart() {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const cartContainer = document.getElementById('cart-container');
+        const cartContainer = document.getElementById("cart-container");
+
         if (cart.length === 0) {
             cartContainer.innerHTML = '<p class="empty-cart">Twój koszyk jest pusty.</p>';
-        } else {
-            let html = '<ul class="cart-list">';
-            cart.forEach(product => {
-                html += `<li class="cart-item">
-                        <span>${product.nazwa}</span>
-                        <div>
-                            <button class="cart-button cart-button-minus" data-id="${product.id}">-</button>
-                            <span>${product.quantity} szt.</span>
-                            <button class="cart-button cart-button-plus" data-id="${product.id}">+</button>
-                            <span>${product.cena} zł/szt.</span>
-                        </div>
-                        <button class="cart-button cart-button-remove" data-id="${product.id}">Usuń</button>
-                    </li>`;
-            });
-            html += '</ul>';
-            cartContainer.innerHTML = html;
-
-            // Eventy do przycisków plus, minus i usuwania
-            document.querySelectorAll('.cart-button-plus').forEach(button => {
-                button.addEventListener('click', function () {
-                    const productId = button.getAttribute('data-id');
-                    updateCartQuantity(productId, 1);
-                });
-            });
-
-            document.querySelectorAll('.cart-button-minus').forEach(button => {
-                button.addEventListener('click', function () {
-                    const productId = button.getAttribute('data-id');
-                    updateCartQuantity(productId, -1);
-                });
-            });
-
-            document.querySelectorAll('.cart-button-remove').forEach(button => {
-                button.addEventListener('click', function () {
-                    const productId = button.getAttribute('data-id');
-                    removeFromCart(productId);
-                });
-            });
+            return;
         }
+
+        let html = '<ul class="cart-list">';
+        cart.forEach((product) => {
+            html += `
+            <li class="cart-item">
+                <span>${product.nazwa}</span>
+                <div>
+                    <button class="cart-button cart-button-minus" data-id="${product.id}">-</button>
+                    <span>${product.quantity} szt.</span>
+                    <button class="cart-button cart-button-plus" data-id="${product.id}">+</button>
+                    <span>${product.cena} zł/szt.</span>
+                </div>
+                <button class="cart-button cart-button-remove" data-id="${product.id}">Usuń</button>
+            </li>`;
+        });
+        html += "</ul>";
+        cartContainer.innerHTML = html;
+
+        // Dodaj obsługę przycisków
+        document.querySelectorAll(".cart-button-plus").forEach((button) => {
+            button.addEventListener("click", () => {
+                const productId = button.getAttribute("data-id");
+                updateCartQuantity(productId, 1);
+            });
+        });
+
+        document.querySelectorAll(".cart-button-minus").forEach((button) => {
+            button.addEventListener("click", () => {
+                const productId = button.getAttribute("data-id");
+                updateCartQuantity(productId, -1);
+            });
+        });
+
+        document.querySelectorAll(".cart-button-remove").forEach((button) => {
+            button.addEventListener("click", () => {
+                const productId = button.getAttribute("data-id");
+                removeFromCart(productId);
+            });
+        });
     }
 
+
+
     // Funkcja do aktualizacji ilości produktu w koszyku
-    async function updateCartQuantity(id, change) {
+    function updateCartQuantity(id, change) {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         const product = cart.find(p => p.id === id);
-        const productData = await getProductDataById(id);
-        if (product && productData) {
-            const newQuantity = product.quantity + change;
-            if (newQuantity <= 0) {
-                removeFromCart(id);
-            } else if (newQuantity <= productData.ilosc) {
-                product.quantity = newQuantity;
-                localStorage.setItem("cart", JSON.stringify(cart));
-                updateProductQuantityInDB(id, -change);
-                displayCart();
+        if (product) {
+            product.ilosc += change; // Zmień ilość
+            if (product.ilosc <= 0) {
+                removeFromCart(id); // Usuń produkt, jeśli ilość <= 0
             } else {
-                alert(`Dostępna ilość to tylko ${productData.ilosc} sztuk.`);
+                localStorage.setItem("cart", JSON.stringify(cart));
+                displayCart();
             }
         }
     }
 
-    // Funkcja do usuwania produktu z koszyka
-    async function removeFromCart(id) {
+    // Funkcja usuwająca produkt z koszyka
+    function removeFromCart(id) {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const product = cart.find(p => p.id === id);
-        cart = cart.filter(item => item.id !== id);
+        cart = cart.filter(item => item.id !== id); // Usuń produkt z koszyka
         localStorage.setItem("cart", JSON.stringify(cart));
-
-        // Jeśli usunięto produkt, zwiększamy dostępność w bazie danych
-        if (product) {
-            updateProductQuantityInDB(id, product.quantity);
-        }
         displayCart();
     }
 
-    // Funkcja do aktualizacji ilości produktu w bazie danych
-    async function updateProductQuantityInDB(id, quantityChange) {
-        const productRef = doc(db, "produkty", id);
-        const productData = await getProductDataById(id);
-
-        if (productData) {
-            const updatedQuantity = productData.ilosc + quantityChange;
-            await updateDoc(productRef, {
-                ilosc: updatedQuantity
-            });
-        }
-    }
-
-    // Po kliknięciu przycisku przejścia do finalizacji
-    document.getElementById('finalize-btn').addEventListener('click', function() {
+    // Obsługuje kliknięcie na przycisk "Przejdź do podsumowania"
+    document.getElementById('finalize-btn').addEventListener('click', function () {
         document.getElementById('order-summary').style.display = 'block';
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        let summaryHtml = '<ul>';
-        cart.forEach(product => {
-            summaryHtml += `<li>${product.nazwa} - ${product.quantity} szt. - ${product.cena} zł/szt.</li>`;
-        });
-        summaryHtml += '</ul>';
-        document.getElementById('summary-container').innerHTML = summaryHtml;
+        displayCartSummary();
     });
 
-    // Inicjalizacja koszyka na stronie
+    // Wyświetlanie podsumowania koszyka
+    function displayCartSummary() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const summaryContainer = document.getElementById('summary-container');
+        summaryContainer.innerHTML = '';
+
+        cart.forEach(product => {
+            summaryContainer.innerHTML += `<p>${product.nazwa} - ${product.ilosc} szt. - ${product.cena} zł/szt.</p>`;
+        });
+    }
+
+    // Obsługuje formularz zamówienia
+    document.getElementById('payment-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+        const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked').value;
+
+        // Wysyłanie e-maila i SMS-a (symulacja)
+        console.log('E-mail wysłany do:', email);
+        console.log('SMS wysłany na numer:', phone);
+        console.log('Wybrana metoda płatności:', paymentMethod);
+        console.log('Wybrana metoda dostawy:', deliveryMethod);
+
+        localStorage.removeItem('cart');
+        displayCart();
+        document.getElementById('order-summary').style.display = 'none';
+    });
+
     displayCart();
 </script>
-
 <!--fotter-->
 <div class="footer" id="kont">
     <div class="footer_tlo">

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>Test</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/produkt/prod_res.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/kategorie/res_kategorie.css" type="text/css">
+    <link rel="stylesheet" href="../../css/fontello-51cfb816/fontello-51cfb816/css/fontello.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>BULL - Białko</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="../../js/sticki.js"></script>
+    <script src="../../js/jquery.scrollTo.min.js"></script>
+    <script src="../../js/scroll.js"></script>
+    <script src="../../js/hamburger.js"></script>
+    <script src="../../js/animacja.js"></script>
+    <script src="przycisk.js"></script>
+</head>
+<body>
+<div class="prod_main_pra" data-id="1" data-name="Whey Protein Kawa Late" data-price="35">
+    <p class="nazwa_produktu">Whey Protein Kawa Late</p>
+    <p class="smak_prd"> Kawa Late - 500g </p>
+    <p class="cena_produktu">Cena: 35zł</p>
+    <p class="cena_produktu_jedno">Cena jednostkowa: 300g (40,00 zł / 100g)</p>
+        <div class="number-input">
+            <button class="minus">-</button>
+            <input type="number" id="quantity" name="quantity" value="1" min="1" max="20">
+            <button class="plus">+</button>
+            <a id="add-to-cart" class="przycisk_produkt">Dodaj do koszyka</a>
+        </div>
+    <p class="product-stock">Dostępne w magazynie: <span class="stock-value">Ładowanie...</span></p>
+</div>
+
+
+
+<!-- Importowanie funkcji z koszyk.js -->
+<script type="module">
+    import { wczytajDaneProduktu, ustawObslugeKoszyka, ustawObslugePrzyciskow } from './js/koszyk.js';
+
+    // Inicjalizacja funkcjonalności dla produktu
+    document.addEventListener("DOMContentLoaded", () => {
+        const container = document.querySelector(".prod_main_pra");
+        const prodId = container.dataset.id;
+
+        // Wczytaj dane produktu
+        wczytajDaneProduktu(prodId, container);
+
+        // Ustaw obsługę koszyka
+        ustawObslugeKoszyka(container);
+
+        // Ustaw obsługę przycisków "+" i "-"
+        ustawObslugePrzyciskow(container);
+    });
+</script>
+
+</body>
+</html>

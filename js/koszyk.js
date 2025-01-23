@@ -1,184 +1,129 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
-// Twoja konfiguracja Firebase
+// Konfiguracja Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyCmCxhe9zhjWlKI1uTJLMRHhqyd2pYvt6k",
+  apiKey: "AIzaSyCmCxhe9zhjWlKI1uTJLMRHhqyd2d2effa844",
   authDomain: "sklep-bull.firebaseapp.com",
   projectId: "sklep-bull",
-  storageBucket: "sklep-bull.firebasestorage.app",
+  storageBucket: "sklep-bull.appspot.com",
   messagingSenderId: "74364332301",
   appId: "1:74364332301:web:4b86ce6c8bbd2d2effa844"
 };
 
-// Inicjalizacja Firebase
 const app = initializeApp(firebaseConfig);
-// Inicjalizacja Firestore
 const db = getFirestore(app);
 
-// Funkcja pobierająca dane o produkcie z Firebase na podstawie ID
-async function getProductDataById(productId) {
-  const productRef = doc(db, "produkty", productId);  // Odwołanie do kolekcji "produkty" w Firestore
-  const docSnap = await getDoc(productRef);  // Pobranie dokumentu produktu
+// Wczytanie danych produktu
+export async function wczytajDaneProduktu(prodId, container) {
+  const productRef = doc(db, "produkty", prodId);
+  const productSnap = await getDoc(productRef);
 
-  if (docSnap.exists()) {
-    const productData = docSnap.data();
-    if (productData.ilosc <= 0) {
-      return null;  // Produkt jest wyprzedany
+  if (productSnap.exists()) {
+    const productData = productSnap.data();
+
+    const stockValueElement = container.querySelector(".stock-value");
+    const quantityInput = container.querySelector("#quantity");
+
+    // Ustaw ilość i stan magazynowy
+    if (productData.ilosc > 0) {
+      stockValueElement.textContent = productData.ilosc;
+      quantityInput.max = productData.ilosc;
+      container.querySelector(".przycisk_produkt").classList.remove("disabled");
+    } else {
+      stockValueElement.textContent = "Brak w magazynie";
+      container.querySelector(".przycisk_produkt").classList.add("disabled");
     }
-    return productData;  // Zwracamy dane produktu, jeśli istnieje
   } else {
-    return null;  // Produkt nie istnieje
+    console.error(`Produkt o ID ${prodId} nie istnieje.`);
   }
 }
 
-// Funkcja dodająca produkt do koszyka
-async function addToCart(id, nazwa, cena, ilosc) {
-  // Usuń "zł" z ceny i skonwertuj ją na liczbę
-  cena = parseFloat(cena.replace('zł', '').trim());
-  ilosc = parseInt(ilosc);
+// Dodanie produktu do koszyka
+export function ustawObslugeKoszyka(container) {
+  const addToCartBtn = container.querySelector("#add-to-cart");
+  const quantityInput = container.querySelector("#quantity");
 
-  // Pobierz dane produktu z Firestore
-  const productData = await getProductDataById(id);
-  if (!productData) {
-    alert("Produkt jest wyprzedany lub nie istnieje.");
+  // Pobieranie danych z atrybutów `data-*`
+  const prodId = container.dataset.id; // ID produktu
+  const productName = container.dataset.name; // Nazwa produktu
+  const productPrice = parseFloat(container.dataset.price); // Cena produktu
+
+  if (!productName || isNaN(productPrice)) {
+    console.error("Nie można odczytać danych produktu z atrybutów data-*.");
     return;
   }
 
-  // Sprawdzamy, czy dostępna ilość jest wystarczająca
-  if (ilosc > productData.ilosc) {
-    alert(`Niestety, dostępna ilość to tylko ${productData.ilosc} sztuk.`);
-    return;
-  }
+  // Obsługa kliknięcia przycisku "Dodaj do koszyka"
+  addToCartBtn.addEventListener("click", () => {
+    const quantity = parseInt(quantityInput.value, 10);
 
-  // Pobierz aktualny koszyk z localStorage
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  // Sprawdź, czy produkt już jest w koszyku
-  const existingProduct = cart.find(product => product.id === id);
-
-  if (existingProduct) {
-    // Jeśli produkt istnieje, zwiększ ilość
-    existingProduct.quantity += ilosc;
-  } else {
-    // Jeśli produkt nie istnieje, dodaj go do koszyka
-    cart.push({ id, nazwa, cena, quantity: ilosc });
-  }
-
-  // Zapisz koszyk w localStorage
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  // Zaktualizuj dostępność w bazie danych
-  await updateDoc(doc(db, "produkty", id), {
-    ilosc: productData.ilosc - ilosc
-  });
-  alert("Dodano do koszyka! " + nazwa);
-  console.log(`${nazwa} dodano do koszyka!`);
-}
-
-// Funkcja, która ustawia wartość "max" w input na podstawie dostępności z Firestore
-async function setMaxQuantity(id) {
-  const productData = await getProductDataById(id);
-
-  const availabilityText = document.querySelector(`.prod_main_pra[data-id='${id}'] .availability`);
-  const quantityInput = document.querySelector(`.prod_main_pra[data-id='${id}'] #quantity`);
-
-  if (!productData || productData.ilosc <= 0) {
-    // Jeśli produkt jest wyprzedany
-    if (availabilityText) {
-      availabilityText.textContent = "Produkt wyprzedany";
+    if (!quantity || quantity < 1) {
+      alert("Nieprawidłowa ilość!");
+      return;
     }
-    if (quantityInput) {
-      quantityInput.disabled = true;  // Wyłączamy możliwość zakupu
+
+    // Dodanie do koszyka (localStorage)
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingProduct = cart.find(item => item.id === prodId);
+
+    if (existingProduct) {
+      existingProduct.quantity += quantity;
+    } else {
+      cart.push({ id: prodId, name: productName, price: productPrice, quantity });
     }
-    return;
-  }
 
-  if (quantityInput) {
-    quantityInput.setAttribute("max", productData.ilosc);
-  }
-
-  if (availabilityText) {
-    availabilityText.textContent = `Dostępne: ${productData.ilosc} sztuk`;
-  }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert(`Dodano ${quantity} sztuk ${productName} do koszyka!`);
+  });
 }
 
-// Dodaj event listener do przycisków z klasą "przycisk_produkt"
-document.querySelectorAll('.przycisk_produkt').forEach(button => {
-  button.addEventListener('click', function(event) {
-    // Pobierz element rodzica produktu
-    const productElement = event.target.closest('.prod_main_pra');
 
-    // Pobierz ID produktu z atrybutu data-id
-    const id = productElement.getAttribute('data-id');
-    const nazwa = productElement.querySelector('.nazwa_produktu').textContent;
-    const cena = productElement.querySelector('.cena_produktu').textContent.replace('Cena: ', '');
-    const ilosc = productElement.querySelector('#quantity').value;
 
-    // Wywołaj funkcję addToCart
-    addToCart(id, nazwa, cena, ilosc);
-  });
-});
+// Obsługa przycisków "+" i "-"
+export function ustawObslugePrzyciskow(container) {
+  const plusButton = container.querySelector(".plus");
+  const minusButton = container.querySelector(".minus");
+  const quantityInput = container.querySelector("#quantity");
 
-// Dodaj event listener do przycisków "+" i "-"
-document.querySelectorAll('.plus').forEach(button => {
-  button.addEventListener('click', function(event) {
-    const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
-    const currentValue = parseInt(quantityInput.value);
-    const max = parseInt(quantityInput.getAttribute('max'));
-    if (currentValue < max) {
+  // Obsługa przycisku "+"
+  plusButton.addEventListener("click", () => {
+    const currentValue = parseInt(quantityInput.value, 10);
+    const maxValue = parseInt(quantityInput.max, 10);
+
+    if (currentValue < maxValue) {
       quantityInput.value = currentValue + 1;
     }
   });
-});
 
-document.querySelectorAll('.minus').forEach(button => {
-  button.addEventListener('click', function(event) {
-    const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
-    const currentValue = parseInt(quantityInput.value);
+  // Obsługa przycisku "-"
+  minusButton.addEventListener("click", () => {
+    const currentValue = parseInt(quantityInput.value, 10);
+
     if (currentValue > 1) {
       quantityInput.value = currentValue - 1;
     }
   });
-});
-
-// Ustawiamy "max" dla każdego produktu na stronie i wyświetlamy dostępność
-document.querySelectorAll('.prod_main_pra').forEach(productElement => {
-  const productId = productElement.getAttribute('data-id');
-  setMaxQuantity(productId);
-});
-
-// Funkcja wyświetlania koszyka
-function displayCart() {
-  // Pobierz koszyk z localStorage
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  console.log("Koszyk:", cart);
-  return cart;
 }
 
-// Funkcja usuwania produktu z koszyka
-function removeFromCart(id) {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// Usuwanie produktu z koszyka
+export async function usunZKoszyka(id, ilosc) {
+  const productRef = doc(db, "produkty", id);
+  const productSnap = await getDoc(productRef);
 
-  // Filtruj koszyk, aby usunąć wybrany produkt
-  cart = cart.filter(product => product.id !== id);
+  if (productSnap.exists()) {
+    const productData = productSnap.data();
 
-  // Zapisz zaktualizowany koszyk w localStorage
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
+    // Zwiększenie ilości w magazynie
+    await updateDoc(productRef, { ilosc: productData.ilosc + ilosc });
 
-// Funkcja finalizacji koszyka
-function finalizeCart() {
-  // Pobierz koszyk z localStorage
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    // Aktualizacja koszyka
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart = cart.filter(item => item.id !== id);
 
-  // Oblicz całkowitą kwotę
-  const totalPrice = cart.reduce((total, product) => total + product.price * product.quantity, 0);
-
-  // Wyczyść koszyk po finalizacji
-  localStorage.removeItem("cart");
-
-  // Zwróć całkowitą kwotę
-  console.log(`Koszyk sfinalizowany. Łączna kwota: ${totalPrice} PLN`);
-  return totalPrice;
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert(`Usunięto produkt z koszyka.`);
+  } else {
+    console.error("Produkt nie istnieje w bazie danych.");
+  }
 }

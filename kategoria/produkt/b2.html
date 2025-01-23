@@ -65,20 +65,72 @@
                         </div>
                     </div>
                 </div>
-                <div class="prod_main_pra" data-id="2">
+                <div class="prod_main_pra" data-id="3">
                     <p class="nazwa_produktu">Whey Protein Borówka</p>
                     <p class="smak_prd"> Borówka - 500g </p>
                     <p class="cena_produktu">Cena: 35zł</p>
                     <p class="cena_produktu_jedno">Cena jednostkowa:  500g (7,00 zł / 100g)</p>
-                    <p class="availability"></p>  <!-- Miejsce na informację o dostępności -->
                     <div class="number-input">
                         <button class="minus">-</button>
                         <input type="number" id="quantity" name="quantity" value="1" min="1" max="20">
                         <button class="plus">+</button>
-                        <a  class="przycisk_produkt">Dodaj do koszyka</a>
+                        <a class="przycisk_produkt">Dodaj do koszyka</a>
                     </div>
                 </div>
-                <script type="module" src="../../js/koszyk.js"></script>
+                <script>
+                    // Funkcja dodająca produkt do koszyka
+                    function addToCart(id, nazwa, cena, ilosc) {
+                        // Usuń "zł" z ceny i skonwertuj ją na liczbę
+                        cena = parseFloat(cena.replace('zł', '').trim());
+                        ilosc = parseInt(ilosc);
+
+                        // Pobierz aktualny koszyk z localStorage
+                        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+                        // Sprawdź, czy produkt już jest w koszyku
+                        const existingProduct = cart.find(product => product.id === id);
+
+                        if (existingProduct) {
+                            // Jeśli produkt istnieje, zwiększ ilość
+                            existingProduct.quantity += ilosc;
+                        } else {
+                            // Jeśli produkt nie istnieje, dodaj go do koszyka
+                            cart.push({ id, nazwa, cena, quantity: ilosc });
+                        }
+
+                        // Zapisz koszyk w localStorage
+                        localStorage.setItem("cart", JSON.stringify(cart));
+
+                        console.log(`${nazwa} dodano do koszyka!`);
+                    }
+
+                    // Dodaj event listener do przycisku "+"
+                    document.querySelector('.plus').addEventListener('click', function() {
+                        var quantity = document.querySelector('#quantity');
+                        var currentValue = parseInt(quantity.value);
+                        quantity.value = currentValue + 1;
+                    });
+
+                    // Dodaj event listener do przycisku "-"
+                    document.querySelector('.minus').addEventListener('click', function() {
+                        var quantity = document.querySelector('#quantity');
+                        var currentValue = parseInt(quantity.value);
+                        if (currentValue > 1) {
+                            quantity.value = currentValue - 1;
+                        }
+                    });
+
+                    // Dodaj event listener do przycisku "Dodaj do koszyka"
+                    document.querySelector('#add-to-cart').addEventListener('click', function() {
+                        var id = document.querySelector('.prod_main_pra').getAttribute('data-id');
+                        var nazwa = document.querySelector('.nazwa_produktu').textContent;
+                        var cena = document.querySelector('.cena_produktu').textContent.replace('Cena: ', '');
+                        var ilosc = document.querySelector('#quantity').value;
+
+                        // Wywołaj funkcję addToCart z parametrami
+                        addToCart(id, nazwa, cena, ilosc);
+                    });
+                </script>
             </div>
         </div>
         <div class="info_txt">
