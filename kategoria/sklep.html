@@ -190,8 +190,6 @@
         </div>
     </div>
 </div>
-<!--skelp koszyk -->
-
 <h1>Twój koszyk</h1>
 <div class="cart-container" id="cart-container"></div>
 
@@ -258,13 +256,11 @@
         <button type="submit" class="submit-btn">Złóż zamówienie</button>
     </form>
 </div>
-<!-- Firebase SDK -->
-<script type="module">
-    // Importujemy Firebase i Firestore
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
-    // Twoja konfiguracja Firebase
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
     const firebaseConfig = {
         apiKey: "AIzaSyCmCxhe9zhjWlKI1uTJLMRHhqyd2pYvt6k",
         authDomain: "sklep-bull.firebaseapp.com",
@@ -274,35 +270,18 @@
         appId: "1:74364332301:web:4b86ce6c8bbd2d2effa844"
     };
 
-    // Inicjalizacja Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Funkcja pobierająca dane o produkcie z Firebase na podstawie ID
+    // Funkcja pobierająca dane o produkcie
     async function getProductDataById(productId) {
         const productRef = doc(db, "produkty", productId);
         const docSnap = await getDoc(productRef);
-
-        if (docSnap.exists()) {
-            return docSnap.data();  // Zwracamy dane produktu, jeśli istnieje
-        } else {
-            console.error("Produkt o tym ID nie istnieje w bazie danych.");
-            return null;
-        }
-    }
-
-    // Funkcja dodająca zamówienie do Firestore
-    async function submitOrderToFirebase(orderData) {
-        try {
-            const docRef = await addDoc(collection(db, "zamowienia"), orderData);
-            console.log("Zamówienie zapisane w Firebase z ID: ", docRef.id);
-        } catch (e) {
-            console.error("Błąd podczas zapisywania zamówienia: ", e);
-        }
+        return docSnap.exists() ? docSnap.data() : null;
     }
 
     // Funkcja obsługująca złożenie zamówienia
-    document.getElementById('payment-form').addEventListener('submit', function (event) {
+    document.getElementById('payment-form').addEventListener('submit', async function (event) {
         event.preventDefault();
 
         const orderData = {
@@ -318,61 +297,72 @@
             comments: document.getElementById('comments').value,
         };
 
-        // Zapisz zamówienie do Firebase
-        submitOrderToFirebase(orderData);
+        // Dodanie zamówienia do Firebase
+        try {
+            const docRef = await addDoc(collection(db, "zamowienia"), orderData);
+            console.log("Zamówienie zapisane w Firebase z ID: ", docRef.id);
+            alert('Zamówienie zostało złożone!');
 
-        // Wysłanie potwierdzenia e-mail i SMS (symulacja)
-        alert('Zamówienie zostało złożone!');
+            // Po złożeniu zamówienia wyczyść koszyk
+            localStorage.removeItem('cart');
+            displayCart(); // Zaktualizowanie widoku (pokazanie pustego koszyka)
+
+            window.location.href = "index.html";  // Zmieniamy stronę na index.html
+
+        } catch (e) {
+            console.error("Błąd podczas zapisywania zamówienia: ", e);
+        }
+
+        // Wyczyść koszyk
         localStorage.removeItem('cart');
         displayCart();
     });
 
+    // Wyświetlanie koszyka
     function displayCart() {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const cartContainer = document.getElementById('cart-container');
-
         if (cart.length === 0) {
             cartContainer.innerHTML = '<p class="empty-cart">Twój koszyk jest pusty.</p>';
-            return;
+        } else {
+            let html = '<ul class="cart-list">';
+            cart.forEach(product => {
+                html += `<li class="cart-item">
+                        <span>${product.nazwa}</span>
+                        <div>
+                            <button class="cart-button cart-button-minus" data-id="${product.id}">-</button>
+                            <span>${product.quantity} szt.</span>
+                            <button class="cart-button cart-button-plus" data-id="${product.id}">+</button>
+                            <span>${product.cena} zł/szt.</span>
+                        </div>
+                        <button class="cart-button cart-button-remove" data-id="${product.id}">Usuń</button>
+                    </li>`;
+            });
+            html += '</ul>';
+            cartContainer.innerHTML = html;
+
+            // Eventy do przycisków plus, minus i usuwania
+            document.querySelectorAll('.cart-button-plus').forEach(button => {
+                button.addEventListener('click', function () {
+                    const productId = button.getAttribute('data-id');
+                    updateCartQuantity(productId, 1);
+                });
+            });
+
+            document.querySelectorAll('.cart-button-minus').forEach(button => {
+                button.addEventListener('click', function () {
+                    const productId = button.getAttribute('data-id');
+                    updateCartQuantity(productId, -1);
+                });
+            });
+
+            document.querySelectorAll('.cart-button-remove').forEach(button => {
+                button.addEventListener('click', function () {
+                    const productId = button.getAttribute('data-id');
+                    removeFromCart(productId);
+                });
+            });
         }
-
-        let html = '<ul class="cart-list">';
-        cart.forEach(product => {
-            html += `<li class="cart-item">
-                    <span>${product.nazwa}</span>
-                    <div>
-                        <button class="cart-button cart-button-minus" data-id="${product.id}">-</button>
-                        <span>${product.quantity} szt.</span>
-                        <button class="cart-button cart-button-plus" data-id="${product.id}">+</button>
-                        <span>${product.cena} zł/szt.</span>
-                    </div>
-                    <button class="cart-button cart-button-remove" data-id="${product.id}">Usuń</button>
-                </li>`;
-        });
-        html += '</ul>';
-        cartContainer.innerHTML = html;
-
-        // Ustawienie eventów dla przycisków
-        document.querySelectorAll('.cart-button-plus').forEach(button => {
-            button.addEventListener('click', function () {
-                const productId = button.getAttribute('data-id');
-                updateCartQuantity(productId, 1);
-            });
-        });
-
-        document.querySelectorAll('.cart-button-minus').forEach(button => {
-            button.addEventListener('click', function () {
-                const productId = button.getAttribute('data-id');
-                updateCartQuantity(productId, -1);
-            });
-        });
-
-        document.querySelectorAll('.cart-button-remove').forEach(button => {
-            button.addEventListener('click', function () {
-                const productId = button.getAttribute('data-id');
-                removeFromCart(productId);
-            });
-        });
     }
 
     // Funkcja do aktualizacji ilości produktu w koszyku
@@ -380,18 +370,14 @@
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         const product = cart.find(p => p.id === id);
         const productData = await getProductDataById(id);
-
         if (product && productData) {
             const newQuantity = product.quantity + change;
-
             if (newQuantity <= 0) {
-                // Jeśli ilość spada do 0, usuwamy produkt
                 removeFromCart(id);
             } else if (newQuantity <= productData.ilosc) {
-                // Jeśli dostępna ilość w bazie danych jest większa lub równa nowej ilości
                 product.quantity = newQuantity;
                 localStorage.setItem("cart", JSON.stringify(cart));
-                updateProductQuantityInDB(id, -change);  // Zaktualizuj stan w DB
+                updateProductQuantityInDB(id, -change);
                 displayCart();
             } else {
                 alert(`Dostępna ilość to tylko ${productData.ilosc} sztuk.`);
@@ -410,7 +396,6 @@
         if (product) {
             updateProductQuantityInDB(id, product.quantity);
         }
-
         displayCart();
     }
 
@@ -427,6 +412,19 @@
         }
     }
 
+    // Po kliknięciu przycisku przejścia do finalizacji
+    document.getElementById('finalize-btn').addEventListener('click', function() {
+        document.getElementById('order-summary').style.display = 'block';
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        let summaryHtml = '<ul>';
+        cart.forEach(product => {
+            summaryHtml += `<li>${product.nazwa} - ${product.quantity} szt. - ${product.cena} zł/szt.</li>`;
+        });
+        summaryHtml += '</ul>';
+        document.getElementById('summary-container').innerHTML = summaryHtml;
+    });
+
+    // Inicjalizacja koszyka na stronie
     displayCart();
 </script>
 
