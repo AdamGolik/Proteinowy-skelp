@@ -22,10 +22,13 @@ async function getProductDataById(productId) {
   const docSnap = await getDoc(productRef);  // Pobranie dokumentu produktu
 
   if (docSnap.exists()) {
-    return docSnap.data();  // Zwracamy dane produktu, jeśli istnieje
+    const productData = docSnap.data();
+    if (productData.ilosc <= 0) {
+      return null;  // Produkt jest wyprzedany
+    }
+    return productData;  // Zwracamy dane produktu, jeśli istnieje
   } else {
-    console.error("Produkt o tym ID nie istnieje w bazie danych.");
-    return null;  // Jeśli produkt nie istnieje
+    return null;  // Produkt nie istnieje
   }
 }
 
@@ -38,7 +41,7 @@ async function addToCart(id, nazwa, cena, ilosc) {
   // Pobierz dane produktu z Firestore
   const productData = await getProductDataById(id);
   if (!productData) {
-    alert("Nie udało się pobrać danych o produkcie.");
+    alert("Produkt jest wyprzedany lub nie istnieje.");
     return;
   }
 
@@ -69,7 +72,7 @@ async function addToCart(id, nazwa, cena, ilosc) {
   await updateDoc(doc(db, "produkty", id), {
     ilosc: productData.ilosc - ilosc
   });
-  alert("dodano do koszyka! " + nazwa);
+  alert("Dodano do koszyka! " + nazwa);
   console.log(`${nazwa} dodano do koszyka!`);
 }
 
@@ -77,23 +80,26 @@ async function addToCart(id, nazwa, cena, ilosc) {
 async function setMaxQuantity(id) {
   const productData = await getProductDataById(id);
 
-  if (!productData) return;
-
-  // Ustawiamy maksymalną ilość na podstawie dostępności w bazie danych
-  const quantityInput = document.querySelector(`.prod_main_pra[data-id='${id}'] #quantity`);
   const availabilityText = document.querySelector(`.prod_main_pra[data-id='${id}'] .availability`);
+  const quantityInput = document.querySelector(`.prod_main_pra[data-id='${id}'] #quantity`);
+
+  if (!productData || productData.ilosc <= 0) {
+    // Jeśli produkt jest wyprzedany
+    if (availabilityText) {
+      availabilityText.textContent = "Produkt wyprzedany";
+    }
+    if (quantityInput) {
+      quantityInput.disabled = true;  // Wyłączamy możliwość zakupu
+    }
+    return;
+  }
 
   if (quantityInput) {
     quantityInput.setAttribute("max", productData.ilosc);
   }
 
-  // Dodajemy informację o dostępności
   if (availabilityText) {
-    if (productData.dostepnosc) {
-      availabilityText.textContent = `Dostępne: ${productData.ilosc} sztuk`;
-    } else {
-      availabilityText.textContent = "Produkt niedostępny";
-    }
+    availabilityText.textContent = `Dostępne: ${productData.ilosc} sztuk`;
   }
 }
 

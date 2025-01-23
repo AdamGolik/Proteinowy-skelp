@@ -70,6 +70,7 @@
                     <p class="smak_prd"> Kwaśna Jagoda - 300g </p>
                     <p class="cena_produktu">Cena: 120zł</p>
                     <p class="cena_produktu_jedno">Cena jednostkowa:  300g (40,00 zł / 100g)</p>
+                    <p class="availability"></p>  <!-- Miejsce na informację o dostępności -->
                     <div class="number-input">
                         <button class="minus">-</button>
                         <input type="number" id="quantity" name="quantity" value="1" min="1" max="20">
@@ -77,71 +78,8 @@
                         <a class="przycisk_produkt">Dodaj do koszyka</a>
                     </div>
                 </div>
-
                 <!--                script-->
-                <script>
-                    // Funkcja dodająca produkt do koszyka
-                    function addToCart(id, nazwa, cena, ilosc) {
-                        // Usuń "zł" z ceny i skonwertuj ją na liczbę
-                        cena = parseFloat(cena.replace('zł', '').trim());
-                        ilosc = parseInt(ilosc);
-
-                        // Pobierz aktualny koszyk z localStorage
-                        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-                        // Sprawdź, czy produkt już jest w koszyku
-                        const existingProduct = cart.find(product => product.id === id);
-
-                        if (existingProduct) {
-                            // Jeśli produkt istnieje, zwiększ ilość
-                            existingProduct.quantity += ilosc;
-                        } else {
-                            // Jeśli produkt nie istnieje, dodaj go do koszyka
-                            cart.push({ id, nazwa, cena, quantity: ilosc });
-                        }
-
-                        // Zapisz koszyk w localStorage
-                        localStorage.setItem("cart", JSON.stringify(cart));
-
-                        console.log(`${nazwa} dodano do koszyka!`);
-                    }
-
-                    // Dodaj event listener do przycisków z klasą "przycisk_produkt"
-                    document.querySelectorAll('.przycisk_produkt').forEach(button => {
-                        button.addEventListener('click', function(event) {
-                            // Pobierz element rodzica produktu
-                            const productElement = event.target.closest('.prod_main_pra');
-
-                            // Pobierz dane produktu z elementów HTML
-                            const id = productElement.getAttribute('data-id');
-                            const nazwa = productElement.querySelector('.nazwa_produktu').textContent;
-                            const cena = productElement.querySelector('.cena_produktu').textContent.replace('Cena: ', '');
-                            const ilosc = productElement.querySelector('#quantity').value;
-
-                            // Wywołaj funkcję addToCart
-                            addToCart(id, nazwa, cena, ilosc);
-                        });
-                    });
-
-                    // Dodaj event listener do przycisków "+" i "-"
-                    document.querySelectorAll('.plus').forEach(button => {
-                        button.addEventListener('click', function(event) {
-                            const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
-                            const currentValue = parseInt(quantityInput.value);
-                            quantityInput.value = currentValue + 1;
-                        });
-                    });
-
-                    document.querySelectorAll('.minus').forEach(button => {
-                        button.addEventListener('click', function(event) {
-                            const quantityInput = event.target.closest('.number-input').querySelector('#quantity');
-                            const currentValue = parseInt(quantityInput.value);
-                            if (currentValue > 1) {
-                                quantityInput.value = currentValue - 1;
-                            }
-                        });
-                    });
-                </script>
+                <script type="module" src="../../js/koszyk.js"></script>
             </div>
         </div>
         <div class="info_txt">
