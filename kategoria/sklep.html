@@ -258,12 +258,11 @@
         <button type="submit" class="submit-btn">Złóż zamówienie</button>
     </form>
 </div>
-
 <!-- Firebase SDK -->
 <script type="module">
     // Importujemy Firebase i Firestore
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
     // Twoja konfiguracja Firebase
     const firebaseConfig = {
@@ -279,6 +278,19 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // Funkcja pobierająca dane o produkcie z Firebase na podstawie ID
+    async function getProductDataById(productId) {
+        const productRef = doc(db, "produkty", productId);
+        const docSnap = await getDoc(productRef);
+
+        if (docSnap.exists()) {
+            return docSnap.data();  // Zwracamy dane produktu, jeśli istnieje
+        } else {
+            console.error("Produkt o tym ID nie istnieje w bazie danych.");
+            return null;
+        }
+    }
+
     // Funkcja dodająca zamówienie do Firestore
     async function submitOrderToFirebase(orderData) {
         try {
@@ -293,16 +305,11 @@
     document.getElementById('payment-form').addEventListener('submit', function (event) {
         event.preventDefault();
 
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
-        const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked').value;
-
         const orderData = {
-            email,
-            phone,
-            paymentMethod,
-            deliveryMethod,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            paymentMethod: document.querySelector('input[name="payment-method"]:checked').value,
+            deliveryMethod: document.querySelector('input[name="delivery-method"]:checked').value,
             products: JSON.parse(localStorage.getItem("cart")),
             name: document.getElementById('name').value,
             address: document.getElementById('address').value,
@@ -316,15 +323,8 @@
 
         // Wysłanie potwierdzenia e-mail i SMS (symulacja)
         alert('Zamówienie zostało złożone!');
-        console.log('E-mail wysłany do:', email);
-        console.log('SMS wysłany na numer:', phone);
-        console.log('Wybrana metoda płatności:', paymentMethod);
-        console.log('Wybrana metoda dostawy:', deliveryMethod);
-
-        // Czyszczenie koszyka
         localStorage.removeItem('cart');
         displayCart();
-        document.getElementById('order-summary').style.display = 'none';
     });
 
     function displayCart() {
@@ -352,6 +352,7 @@
         html += '</ul>';
         cartContainer.innerHTML = html;
 
+        // Ustawienie eventów dla przycisków
         document.querySelectorAll('.cart-button-plus').forEach(button => {
             button.addEventListener('click', function () {
                 const productId = button.getAttribute('data-id');
@@ -375,67 +376,60 @@
     }
 
     // Funkcja do aktualizacji ilości produktu w koszyku
-    function updateCartQuantity(id, change) {
+    async function updateCartQuantity(id, change) {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         const product = cart.find(p => p.id === id);
-        if (product) {
-            product.quantity += change;
-            if (product.quantity <= 0) {
+        const productData = await getProductDataById(id);
+
+        if (product && productData) {
+            const newQuantity = product.quantity + change;
+
+            if (newQuantity <= 0) {
+                // Jeśli ilość spada do 0, usuwamy produkt
                 removeFromCart(id);
-            } else {
+            } else if (newQuantity <= productData.ilosc) {
+                // Jeśli dostępna ilość w bazie danych jest większa lub równa nowej ilości
+                product.quantity = newQuantity;
                 localStorage.setItem("cart", JSON.stringify(cart));
+                updateProductQuantityInDB(id, -change);  // Zaktualizuj stan w DB
                 displayCart();
+            } else {
+                alert(`Dostępna ilość to tylko ${productData.ilosc} sztuk.`);
             }
         }
     }
 
-    // Funkcja usuwająca produkt z koszyka
-    function removeFromCart(id) {
+    // Funkcja do usuwania produktu z koszyka
+    async function removeFromCart(id) {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const product = cart.find(p => p.id === id);
         cart = cart.filter(item => item.id !== id);
         localStorage.setItem("cart", JSON.stringify(cart));
+
+        // Jeśli usunięto produkt, zwiększamy dostępność w bazie danych
+        if (product) {
+            updateProductQuantityInDB(id, product.quantity);
+        }
+
         displayCart();
     }
 
-    // Obsługuje kliknięcie na przycisk "Przejdź do podsumowania"
-    document.getElementById('finalize-btn').addEventListener('click', function () {
-        document.getElementById('order-summary').style.display = 'block';
-        displayCartSummary();
-    });
+    // Funkcja do aktualizacji ilości produktu w bazie danych
+    async function updateProductQuantityInDB(id, quantityChange) {
+        const productRef = doc(db, "produkty", id);
+        const productData = await getProductDataById(id);
 
-    // Wyświetlanie podsumowania koszyka
-    function displayCartSummary() {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const summaryContainer = document.getElementById('summary-container');
-        summaryContainer.innerHTML = '';
-
-        cart.forEach(product => {
-            summaryContainer.innerHTML += `<p>${product.nazwa} - ${product.quantity} szt. - ${product.cena} zł/szt.</p>`;
-        });
+        if (productData) {
+            const updatedQuantity = productData.ilosc + quantityChange;
+            await updateDoc(productRef, {
+                ilosc: updatedQuantity
+            });
+        }
     }
-
-    // Obsługuje formularz zamówienia
-    document.getElementById('payment-form').addEventListener('submit', function (event) {
-        event.preventDefault();
-
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
-        const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked').value;
-
-        // Wysyłanie e-maila i SMS-a (symulacja)
-        console.log('E-mail wysłany do:', email);
-        console.log('SMS wysłany na numer:', phone);
-        console.log('Wybrana metoda płatności:', paymentMethod);
-        console.log('Wybrana metoda dostawy:', deliveryMethod);
-
-        localStorage.removeItem('cart');
-        displayCart();
-        document.getElementById('order-summary').style.display = 'none';
-    });
 
     displayCart();
 </script>
+
 <!--fotter-->
 <div class="footer" id="kont">
     <div class="footer_tlo">
